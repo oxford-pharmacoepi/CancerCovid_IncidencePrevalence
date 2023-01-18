@@ -1,5 +1,5 @@
 # table names----
-outcome_table_name<-paste0(outcome_table_stem,"_o")
+#outcome_table_name<-paste0(outcome_table_stem,"_o")
 #strata_table_name<-paste0(outcome_table_stem,"_strata")
 
 # output files ----

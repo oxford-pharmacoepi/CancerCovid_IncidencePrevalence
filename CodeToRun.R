@@ -38,9 +38,6 @@ password    <-  Sys.getenv("DB_PASSWORD")
 port        <-  Sys.getenv("DB_PORT") 
 host        <-  Sys.getenv("DB_HOST") 
 server_dbi  <-  Sys.getenv("DB_SERVER_DBI_cdmgold202007")
-#server_dbi<-Sys.getenv("DB_SERVER_cdmgold202007_dbi") # Danielle's line
-
-
 
 # Specify cdm_reference via DBI connection details -----
 # In this study we also use the DBI package to connect to the database
@@ -64,10 +61,15 @@ vocabulary_database_schema<-cdm_database_schema
 # The name of the schema where results tables will be created 
 results_database_schema<-"results"
 
-# Name of outcome table in the result table where the outcome cohorts will be stored
+# Name of outcome and strata tables in the result table where the outcome and strata cohorts will be stored
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
-outcome_table_stem <-"cancercovidcancers" # this is the four cancers
+
+outcome_table_name_1 <- "cancercovidcancers" # this is the four cancers
+#strata_table_name_1 <- "breast_prostate_strata" # this is the breast and prostate cohorts to be used as denominator strata
+#outcome_table_name_2 <- "endocrine_tx_table" # this is the table for the endocrine treatments
+#strata_table_name_2 <- "breast_prostate_endocrine_strata" # this is the table for the breast/prostate cancer diagnosis cohorts who are on endocrine treatments to be used as denominator strata
+#outcome_table_name_3 <- "osteo_dx_table" # this is the table for the endocrine-treatment related outcomes of osteoposrosis, osteopenia, bon fracture, bisphosphonates and denosumab
 
 # create cdm reference ----
 cdm <- CDMConnector::cdm_from_con(con = db, 
