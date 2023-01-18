@@ -12,9 +12,11 @@ library(dbplyr)
 library(dplyr)
 library(readr)
 library(log4r)
+library(tidyr)
 library(stringr)
 library(CDMConnector)
 library(ggplot2)
+library(RPostgres)
 
 
 # database metadata and connection details -----
@@ -31,12 +33,13 @@ output.folder<-here("Results", db.name)
 # Specify databaseConnector connection details -----
 # database connection details
 # connect to database
-user<-Sys.getenv("DB_USER")
-password<- Sys.getenv("DB_PASSWORD")
-port<-Sys.getenv("DB_PORT") 
-host<-Sys.getenv("DB_HOST") 
-#server_dbi<-Sys.getenv("DB_SERVER_cdm_aurum_202106_dbi") #aurum
-server_dbi<-Sys.getenv("DB_SERVER_cdmgold202007_dbi") #gold
+user        <-  Sys.getenv("DB_USER")
+password    <-  Sys.getenv("DB_PASSWORD")
+port        <-  Sys.getenv("DB_PORT") 
+host        <-  Sys.getenv("DB_HOST") 
+server_dbi  <-  Sys.getenv("DB_SERVER_DBI_cdmgold202007")
+#server_dbi<-Sys.getenv("DB_SERVER_cdmgold202007_dbi") # Danielle's line
+
 
 
 # Specify cdm_reference via DBI connection details -----
@@ -64,14 +67,13 @@ results_database_schema<-"results"
 # Name of outcome table in the result table where the outcome cohorts will be stored
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
-outcome_table_stem_cancers <-"cancercovidcancers" # this is the four cancers
-outcome_table_stem_endocrine_tx <-"endocrine_tx_table" # this is the breast and prostate related endocrine treatments
-outcome_table_stem_endocrine_dx <- "osteo_dx_table" #  this is for the endocrine treatment-related outcomes of osteoporosis, osteopenia, bone fractures, bisphosphonates, and denosumab
+outcome_table_stem <-"cancercovidcancers" # this is the four cancers
 
 # create cdm reference ----
 cdm <- CDMConnector::cdm_from_con(con = db, 
                                   cdm_schema = cdm_database_schema,
                                   write_schema = results_database_schema)
+
 
 # to check whether the DBI connection is correct, 
 # running the next line should give you a count of your person table
