@@ -223,17 +223,16 @@ point_prev_yrs_plot <- study_results$prevalence_estimates %>%
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(prevalence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 point_prev_yrs_plot <- 
-  ggplot(point_prev_yrs_plot, aes(x = time, y=prevalence,
+  ggplot(point_prev_yrs_plot, aes(x = prevalence_start_date, y=prevalence,
                                   ymin = prevalence_95CI_lower,
-                                  ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                  ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -241,8 +240,8 @@ point_prev_yrs_plot <-
     limits = c(0, NA)
   ) +
   ggtitle("Point Prevalence of Cancer in years before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
+   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 print(point_prev_yrs_plot)
@@ -251,12 +250,10 @@ print(point_prev_yrs_plot)
 plotname <- paste0("point_prev_yrs", db.name, ".pdf")
 
 pdf(here("Results", db.name ,plotname),
-    width = 15, height = 5)
+    width = 10, height = 8)
 print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
-# save the plot as jpg
-ggsave("Figures/FigureS3.rev_jpg.jpg",sup3,dpi=300)
 
 # POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
 
@@ -264,17 +261,16 @@ point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amen
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(prevalence_start_date, format="%b %Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 point_prev_months_plot <- 
-  ggplot(point_prev_months_plot, aes(x = time, y=prevalence,
+  ggplot(point_prev_months_plot, aes(x = prevalence_start_date, y=prevalence,
                                      ymin = prevalence_95CI_lower,
-                                     ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                     ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -282,40 +278,38 @@ point_prev_months_plot <-
     limits = c(0, NA)
   ) +
   ggtitle("Point Prevalence of Cancer in months before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months",".pdf")
+plotname <- paste0("point_prev_months", db.name, ".pdf")
 
-pdf(here("Results", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 8)
 print(point_prev_months_plot, newpage = FALSE)
 dev.off()
 
-# save the plot as jpg
-ggsave("Figures/FigureS3.rev_jpg.jpg",sup3,dpi=300)
 
-# PERID PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+
+# PERIOD PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
 per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(prevalence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 per_prev_yrs_plot <- 
-  ggplot(per_prev_yrs_plot, aes(x = time, y=prevalence,
+  ggplot(per_prev_yrs_plot, aes(x = prevalence_start_date, y=prevalence,
                                 ymin = prevalence_95CI_lower,
-                                ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -323,17 +317,17 @@ per_prev_yrs_plot <-
     limits = c(0, NA)
   ) +
   ggtitle("Period Prevalence of Cancer in years before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs",".pdf")
+plotname <- paste0("per_prev_yrs", db.name,".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 8)
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
@@ -343,17 +337,16 @@ per_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend 
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(prevalence_start_date, format="%b %Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 per_prev_months_plot <- 
-  ggplot(per_prev_months_plot, aes(x = time, y=prevalence,
+  ggplot(per_prev_months_plot, aes(x = prevalence_start_date, y=prevalence,
                                    ymin = prevalence_95CI_lower,
-                                   ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                   ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -361,89 +354,91 @@ per_prev_months_plot <-
     limits = c(0, NA)
   ) +
   ggtitle("Period Prevalence of Cancer in months before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months",".pdf")
+plotname <- paste0("per_prev_months",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 8)
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
-inc_yrs_plot <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to inc_yrs
+inc_yrs_plot <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
+  filter(analysis_outcome_washout == 180) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
-
-inc_yrs_plot %>%
-  ggplot(aes(x = time, y = ir_100000_pys,
-             ymin = ir_100000_pys_95CI_lower,
-             ymax = ir_100000_pys_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+inc_yrs_plot <- 
+  ggplot(inc_yrs_plot, aes(x = incidence_start_date, y=incidence_100000_pys,
+                                ymin = incidence_100000_pys_95CI_lower,
+                                ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, NA)) +
+  scale_y_continuous(limits = c(0, 150)) +
   ggtitle("Incidence Rates of Cancer in years before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs",".pdf")
+plotname <- paste0("inc_yrs",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 8)
 print(inc_yrs_plot, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA
 
-inc_months_plot <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to inc_yrs
+
+
+# INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
+
+inc_months_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
-  filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%b %Y")) %>%
+    filter(analysis_interval == "months") %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
-inc_months_plot %>%
-  ggplot(aes(x = incidence_start_date, y = ir_100000_pys,
-             ymin = ir_100000_pys_95CI_lower,
-             ymax = ir_100000_pys_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+inc_months_plot <- 
+  ggplot(inc_months_plot, aes(x = incidence_start_date, y=incidence_100000_pys,
+                           ymin = incidence_100000_pys_95CI_lower,
+                           ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, NA)) +
+  scale_y_continuous(limits = c(0, 150)) +
   ggtitle("Incidence Rates of Cancer in months before and after COVID-19 Lockdown") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months",".pdf")
+plotname <- paste0("inc_months", db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 12, height = 8)
 print(inc_months_plot, newpage = FALSE)
 dev.off()
+
 
 
 # ========= PLOTS STRATIFIED BY AGE AND SEX ================================== #
@@ -452,20 +447,17 @@ dev.off()
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+
   as.data.frame()
 
-point_prev_yrs_plot_s <- as.data.frame(point_prev_yrs_plot_s)
-
-#my_title <- "Point Prevalence of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex"
 point_prev_yrs_plot_s <- 
-  ggplot(point_prev_yrs_plot_s, aes(x = time, y=prevalence,
+  ggplot(point_prev_yrs_plot_s, aes(x = prevalence_start_date, y=prevalence,
                                     ymin = prevalence_95CI_lower,
-                                    ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                    ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -474,21 +466,19 @@ point_prev_yrs_plot_s <-
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  #labs(title = str_wrap(my_title, 60)) +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_s",".pdf")
+plotname <- paste0("point_prev_yrs_s",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 15)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 10)
 print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
-
 
 
 # POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
@@ -496,17 +486,16 @@ dev.off()
 point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%b %Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 point_prev_months_plot_s <- 
-  ggplot(point_prev_months_plot_s, aes(x = time, y=prevalence,
+  ggplot(point_prev_months_plot_s, aes(x = prevalence_start_date, y=prevalence,
                                        ymin = prevalence_95CI_lower,
-                                       ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                       ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -515,17 +504,17 @@ point_prev_months_plot_s <-
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_plot_s",".pdf")
+plotname <- paste0("point_prev_months_plot_s",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 15)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 10)
 print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
@@ -535,17 +524,16 @@ dev.off()
 per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 per_prev_yrs_plot_s <- 
-  ggplot(per_prev_yrs_plot_s, aes(x = time, y=prevalence,
+  ggplot(per_prev_yrs_plot_s, aes(x = prevalence_start_date, y=prevalence,
                                   ymin = prevalence_95CI_lower,
-                                  ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                  ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -554,17 +542,17 @@ per_prev_yrs_plot_s <-
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Period Prevalence of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_plot_s",".pdf")
+plotname <- paste0("per_prev_yrs_plot_s",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 15)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 10)
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
@@ -573,17 +561,16 @@ dev.off()
 per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%b %Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
 per_prev_months_plot_s <- 
-  ggplot(per_prev_months_plot_s, aes(x = time, y=prevalence,
+  ggplot(per_prev_months_plot_s, aes(x = prevalence_start_date, y=prevalence,
                                      ymin = prevalence_95CI_lower,
-                                     ymax = prevalence_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+                                     ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(
@@ -592,89 +579,89 @@ per_prev_months_plot_s <-
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Period Prevalence of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_plot_s",".pdf")
+plotname <- paste0("per_prev_months_plot_s",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 15)
+pdf(here("Results", db.name,plotname),
+    width = 10, height = 10)
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
 # INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
 
-inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to inc_yrs
+inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+  filter(analysis_outcome_washout == 180) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
-
-inc_yrs_plot_s %>%
-  ggplot(aes(x = time, y = incidence_100000_pys,
-             ymin = incidence_100000_pys_95CI_lower,
-             ymax = incidence_100000_pys_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+inc_yrs_plot_s <- 
+  ggplot(inc_yrs_plot_s, aes(x = incidence_start_date, y=incidence_100000_pys,
+                           ymin = incidence_100000_pys_95CI_lower,
+                           ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, NA)) +
+  scale_y_continuous(limits = c(0, 400)) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer") +
+    ggtitle("Incidence Rates of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
-print(inc_yrs_plot_s)
+inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_plot_s",".pdf")
+plotname <- paste0("inc_yrs_s",db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 15)
+pdf(here("Results", db.name,plotname),
+    width = 12, height = 12)
 print(inc_yrs_plot_s, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX
 
-inc_months_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to inc_yrs
+
+
+# INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
+
+inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "BreastCancer" ~ "Breast")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ColorectalCancer" ~ "Colorectal")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "LungCancer" ~ "Lung")) %>%
-  mutate(outcome_cohort_name = replace(outcome_cohort_name, outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>%
-  mutate(time = format(incidence_start_date, format="%b %Y")) %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   as.data.frame()
 
-inc_months_plot_s %>%
-  ggplot(aes(x = time, y = incidence_100000_pys,
-             ymin = incidence_100000_pys_95CI_lower,
-             ymax = incidence_100000_pys_95CI_upper, color=outcome_cohort_name, group=outcome_cohort_name)) +
+inc_months_plot_s <- 
+  ggplot(inc_months_plot_s, aes(x = incidence_start_date, y=incidence_100000_pys,
+                              ymin = incidence_100000_pys_95CI_lower,
+                              ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, NA)) +
+  scale_y_continuous(limits = c(0, 400)) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer") +
+    ggtitle("Incidence Rates of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_vline(xintercept=as.numeric(as.Date(c("2020-04-01"))),linetype=2, color="black")
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_plot_s",".pdf")
+plotname <- paste0("inc_months_s", db.name, ".pdf")
 
-pdf(here("4_IncPrev", "Plots",plotname),
-    width = 15, height = 5)
+pdf(here("Results", db.name,plotname),
+    width = 12, height = 12)
 print(inc_months_plot_s, newpage = FALSE)
 dev.off()
-
 
 
