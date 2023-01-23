@@ -5,7 +5,8 @@
 #                                18-01-2023                                    #
 # ============================================================================ #
 
-
+print(paste0("- 1. Incidence and Prevalence of Cancers"))
+info(logger, "- 1. Incidence and Prevalence of Cancers")
 
 ## ======= Compute the denominator population (\~7 minutes in CPRD GOLD) ==== ##
 
@@ -129,7 +130,7 @@ per_prev_months %>%
 print(paste0("- Got period prevalence: cancer populations"))
 info(logger, "- Got period prevalence: cancer populations")
 
-save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", "prev.RData"))
+save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "prev.RData"))
 
 ## ======================== CALCULATE INCIDENCE ============================= ##
 
@@ -145,8 +146,8 @@ inc_yrs <- estimateIncidence(
   outcomeCohortName = outcome_cohorts_1$cohortName,
   interval = "years",
   completeDatabaseIntervals = FALSE,
-  outcomeWashout = c(0, NA, 180),
-  repeatedEvents = TRUE,
+  outcomeWashout = c(0, NULL, 365),
+  repeatedEvents = FALSE,
   minCellCount = 5,
   verbose = FALSE
 )
@@ -164,8 +165,8 @@ inc_months <- estimateIncidence(
   outcomeCohortName = outcome_cohorts_1_1$cohortName,
   interval = "months",
   completeDatabaseIntervals = FALSE,
-  outcomeWashout = NA,
-  repeatedEvents = TRUE,
+  outcomeWashout = c(0, NULL, 365),
+  repeatedEvents = FALSE,
   minCellCount = 5,
   verbose = FALSE
 )
@@ -214,8 +215,8 @@ info(logger, "- Exported incidence and prevalence results: cancer populations")
 ## ===================== PLOTS FOR DENOMINATOR POP == 1 ===================== ##
 
 
-print(paste0("- Plotting incidence and prevalence results: cancer populations"))
-info(logger, "- Plotting incidence and prevalence results: cancer populations")
+print(paste0("- Plotting incidence and prevalence results: cancer populations denominator 1"))
+info(logger, "- Plotting incidence and prevalence results: cancer populations denominator 1")
 
 # POINT PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
@@ -239,7 +240,7 @@ point_prev_yrs_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Point Prevalence of Cancer in years before and after COVID-19 Lockdown") +
+  ggtitle("Point Prevalence of Cancer in Years Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -277,7 +278,7 @@ point_prev_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Point Prevalence of Cancer in months before and after COVID-19 Lockdown") +
+  ggtitle("Point Prevalence of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -316,7 +317,7 @@ per_prev_yrs_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Period Prevalence of Cancer in years before and after COVID-19 Lockdown") +
+  ggtitle("Period Prevalence of Cancer in Years Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -353,7 +354,7 @@ per_prev_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Period Prevalence of Cancer in months before and after COVID-19 Lockdown") +
+  ggtitle("Period Prevalence of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -373,7 +374,7 @@ dev.off()
 
 inc_yrs_plot <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
-  filter(analysis_outcome_washout == 180) %>% 
+  filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "years") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
@@ -388,7 +389,7 @@ inc_yrs_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
-  ggtitle("Incidence Rates of Cancer in years before and after COVID-19 Lockdown") +
+  ggtitle("Incidence Rates of Cancer in Years Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -410,7 +411,8 @@ dev.off()
 
 inc_months_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
-    filter(analysis_interval == "months") %>%
+  filter(analysis_outcome_washout == 365) %>% 
+  filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
@@ -424,7 +426,7 @@ inc_months_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
-  ggtitle("Incidence Rates of Cancer in months before and after COVID-19 Lockdown") +
+  ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -439,9 +441,13 @@ pdf(here("Results", db.name,plotname),
 print(inc_months_plot, newpage = FALSE)
 dev.off()
 
-
+print(paste0("- Plots of incidence and prevalence results: cancer populations denominator 1 done"))
+info(logger, "- Plots of incidence and prevalence results: cancer populations denominator 1 done")
 
 # ========= PLOTS STRATIFIED BY AGE AND SEX ================================== #
+
+print(paste0("- Plotting incidence and prevalence results: cancer populations stratified by age and sex"))
+info(logger, "- Plotting incidence and prevalence results: cancer populations stratified by age and sex")
 
 # POINT PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
@@ -465,7 +471,7 @@ point_prev_yrs_plot_s <-
     limits = c(0, NA)
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  ggtitle("Point Prevalence of Cancer in Years Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -503,7 +509,7 @@ point_prev_months_plot_s <-
     limits = c(0, NA)
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  ggtitle("Point Prevalence of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -541,7 +547,7 @@ per_prev_yrs_plot_s <-
     limits = c(0, NA)
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  ggtitle("Period Prevalence of Cancer in Years Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -578,7 +584,7 @@ per_prev_months_plot_s <-
     limits = c(0, NA)
   ) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  ggtitle("Period Prevalence of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -597,7 +603,7 @@ dev.off()
 # INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
 
 inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
-  filter(analysis_outcome_washout == 180) %>% 
+  filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "years") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
@@ -613,7 +619,7 @@ inc_yrs_plot_s <-
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-    ggtitle("Incidence Rates of Cancer in years before and after COVID-19 Lockdown Stratified by Age and Sex") +
+    ggtitle("Incidence Rates of Cancer in Years before and after COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -635,6 +641,7 @@ dev.off()
 
 inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
+  filter(analysis_outcome_washout == 365) %>% 
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
@@ -649,7 +656,7 @@ inc_months_plot_s <-
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
   facet_grid(~denominator_age_group ~denominator_sex) +
-    ggtitle("Incidence Rates of Cancer in months before and after COVID-19 Lockdown Stratified by Age and Sex") +
+    ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -665,3 +672,8 @@ print(inc_months_plot_s, newpage = FALSE)
 dev.off()
 
 
+print(paste0("- Plots of incidence and prevalence results: cancer populations stratified by age and sex done"))
+info(logger, "- Plots of incidence and prevalence results: cancer populations stratified by age and sex done")
+
+print(paste0("- Analysis of all cancers done"))
+info(logger, "- Analysis of all cancers done")
