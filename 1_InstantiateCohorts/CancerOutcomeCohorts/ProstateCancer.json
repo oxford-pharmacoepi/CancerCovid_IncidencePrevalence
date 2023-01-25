@@ -197,7 +197,7 @@
         "ConditionOccurrence": {
           "CodesetId": 0,
           "OccurrenceStartDate": {
-            "Value": "2015-01-01",
+            "Value": "2016-01-01",
             "Op": "gte"
           }
         }

@@ -1,27 +1,28 @@
 # ============================================================================ #
 #                          Incidence/Prevalence for                            #
-#          Endocrine Treatments in Breast and Prostate Cancer Cohorts          #
+#          Osteoporosis, osteopenia, bone fracture diagnoses                   #
+#                    in Breast and Prostate Cancer Cohorts                     #
 #                              Nicola Barclay                                  #
-#                                23-01-2023                                    #
+#                                25-01-2023                                    #
 # ============================================================================ #
 
-## =========================== BREAST CANCER ================================ ##
+## ================== BREAST CANCER ON AROMATASE INHIBITORS ================= ##
 
-print(paste0("- 1. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort"))
-info(logger, "- 1. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort")
+print(paste0("- 1. Incidence and Prevalence of Treatment-Related Outcomes in Breast Cancer Cohort"))
+info(logger, "- 1. Incidence and Prevalence of Treatment-Related Outcomes Breast Cancer Cohort")
 
-## =================== SET THE STRATA DENOMINATOR COHORTS ==================== ##
+## ====== SET THE STRATA DENOMINATOR COHORT BREAST CANCER ON AIS ============ ##
 
-print(paste0("- Getting strata population - breast cancer"))
-info(logger, "- Getting strata population - breast cancer")
+print(paste0("- Getting strata population - breast cancer diagnosis on aromatase inhibitors"))
+info(logger, "- Getting strata population - breast cancer diagnosis on aromatase inhibitors")
 
-cdm$denominator_breast <- generateDenominatorCohortSet(
+cdm$denominator_breast_AI <- generateDenominatorCohortSet(
   cdm = cdm,
   startDate = as.Date("2017-01-01"),
   endDate = as.Date("2020-06-29"),
-  strataTable = "breast_prostate_strata",
-  strataCohortId = 1,
-  strataCohortName = "strata_cohort_1_breast",
+  strataTable = "breast_prostate_endocrine_strata",
+  strataCohortId = 2,
+  strataCohortName = "strata_cohort_2_breast_AIs",
   ageGroup = list(c(0,150), c(20,39), c(40,59), c(60,79), c(80,150)),
   sex = c("Female"),
   daysPriorHistory = 365,
@@ -29,34 +30,34 @@ cdm$denominator_breast <- generateDenominatorCohortSet(
 )
 
 
-cdm$denominator_breast %>% tally()  # to check numbers in denominator_breast population
+cdm$denominator_breast_AI %>% tally()  # to check numbers in denominator_breast population
 
-dpop <- cdm$denominator_breast %>%
+dpop <- cdm$denominator_breast_AI %>%
   collect() %>%
-  left_join(settings(cdm$denominator_breast))
+  left_join(settings(cdm$denominator_breast_AI))
 
 dpop %>%
   group_by(cohort_definition_id, age_group, sex) %>%
   tally()
 
 # View attrition table
-attrition(cdm$denominator_breast)
+attrition(cdm$denominator_breast_AI)
 
-print(paste0("- Got denominator_breast"))
-info(logger, "- Got denominator_breast")
+print(paste0("- Got denominator breast cancer diagnosis on aromatase inhibitors"))
+info(logger, "- Got denominator breast cancer diagnosis on aromatase inhibitors")
 
 ## =================== CALCULATE POINT PREVALENCE =========================== ##
 
-print(paste0("- Getting point prevalence endocrine tx in breast cancer populations"))
-info(logger, "- Getting point prevalence endocrine tx in breast cancer populations")
+print(paste0("- Getting point prevalence AI-related outcomes in breast cancer populations"))
+info(logger, "- Getting point prevalence AI-related outcomes in breast cancer populations")
 
 # years
 point_prev_yrs <- estimatePointPrevalence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, 
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "years",
   timePoint = "start",
@@ -71,10 +72,10 @@ point_prev_yrs %>%
 # months
 point_prev_months <- estimatePointPrevalence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId,# add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId,
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "months",
   timePoint = "start",
@@ -85,22 +86,22 @@ point_prev_months <- estimatePointPrevalence(
 point_prev_months %>%
   glimpse()
 
-print(paste0("- Got point prevalence endocrine tx in breast cancer populations"))
-info(logger, "- Got point prevalence endocrine tx in breast cancer populations")
+print(paste0("- Got point prevalence AI-related outcomes in breast cancer populations"))
+info(logger, "- Got point prevalence AI-related outcomes in breast cancer populations")
 
 
 ## =================== CALCULATE PERIOD PREVALENCE =========================== ##
 
-print(paste0("- Getting period prevalence endocrine tx in breast cancer populations"))
-info(logger, "- Getting period prevalence endocrine tx in breast cancer populations")
+print(paste0("- Getting period prevalence AI-related outcomes in breast cancer populations"))
+info(logger, "- Getting period prevalence AI-related outcomes in breast cancer populations")
 
 # years 
 per_prev_yrs <- estimatePeriodPrevalence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, 
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "years",
   completeDatabaseIntervals = FALSE,
@@ -116,10 +117,10 @@ per_prev_yrs %>%
 # months
 per_prev_months <- estimatePeriodPrevalence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, 
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "Months",
   completeDatabaseIntervals = FALSE,
@@ -131,23 +132,23 @@ per_prev_months %>%
   glimpse()
 
 
-print(paste0("- Got period prevalence endocrine tx in breast cancer populations"))
-info(logger, "- Got period prevalence endocrine tx in breast cancer populations")
+print(paste0("- Got period prevalence AI-related outcomes in breast cancer populations"))
+info(logger, "- Got period prevalence AI-related outcomes in breast cancer populations")
 
-save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "2_EndocrineTx", "PrevTxBreast.RData"))
+save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "3_OsteoDx", "PrevAIOutcomesBreast.RData"))
 
 ## ======================== CALCULATE INCIDENCE ============================= ##
 
-print(paste0("- Getting incidence endocrine tx in breast cancer populations"))
-info(logger, "- Getting incidence endocrine tx in breast cancer populations")
+print(paste0("- Getting incidence AI-related outcomes in breast cancer populations"))
+info(logger, "- Getting incidence AI-related outcomes in breast cancer populations")
 
 # years
 inc_yrs <- estimateIncidence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, 
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   interval = "years",
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365), 
@@ -163,10 +164,10 @@ inc_yrs %>%
 # months
 inc_months <- estimateIncidence(
   cdm = cdm,
-  denominatorTable = "denominator_breast",
-  outcomeTable = outcome_table_name_2,  
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName, 
+  denominatorTable = "denominator_breast_AI",
+  outcomeTable = outcome_table_name_3,  
+  outcomeCohortId = outcome_cohorts_3$cohortId, 
+  outcomeCohortName = outcome_cohorts_3$cohortName, 
   interval = "months",
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365),
@@ -179,17 +180,17 @@ inc_months %>%
   glimpse()
 
 #save(inc_yrs, file = here("Results", "inc.RData"))
-save(inc_yrs, inc_months, file = here("Results", db.name, "2_EndocrineTx", "IncTxBreast.RData"))
+save(inc_yrs, inc_months, file = here("Results", db.name, "3_OsteoDx", "IncAIOutcomesBreast.RData"))
 
 
-print(paste0("- Got incidence: endocrine tx in breast cancer populations"))
-info(logger, "- Got incidence: endocrine tx in breast cancer populations")
+print(paste0("- Got incidence: AI-related outcomes in breast cancer populations"))
+info(logger, "- Got incidence: AI-related outcomes in breast cancer populations")
 
 
 ## ======== GATHER ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
 
-print(paste0("- Gathering incidence and prevalence results: endocrine tx in breast cancer populations"))
-info(logger, "- Gathering incidence and prevalence results: endocrine tx in breast cancer populations")
+print(paste0("- Gathering incidence and prevalence results: AI-related outcomes in breast cancer populations"))
+info(logger, "- Gathering incidence and prevalence results: AI-related outcomes in breast cancer populations")
 
 study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
                                                   resultList=list(point_prev_yrs, point_prev_months, per_prev_yrs, per_prev_months, inc_yrs, inc_months),
@@ -197,39 +198,42 @@ study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
 
 
 # save study results as a separate R.data file
-save(study_results, file = here("Results", db.name, "2_EndocrineTx", "StudyResults_TxBreast.RData"))
+save(study_results, file = here("Results", db.name, "3_OsteoDx", "StudyResults_AIOutcomesBreast.RData"))
 
-print(paste0("- Got incidence and prevalence results: endocrine tx in breast cancer populations"))
-info(logger, "- Got incidence and prevalence results: endocrine tx in breast cancer populations")
+print(paste0("- Got incidence and prevalence results: AI-related outcomes in breast cancer populations"))
+info(logger, "- Got incidence and prevalence results: AI-related outcomes in breast cancer populations")
 
 
 ## ======== EXPORT ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
 
-print(paste0("- Exporting incidence and prevalence results: endocrine tx in breast cancer populations"))
-info(logger, "- Exporting incidence and Prevalence results: endocrine tx in breast cancer populations")
+print(paste0("- Exporting incidence and prevalence results: AI-related outcomes in breast cancer populations"))
+info(logger, "- Exporting incidence and Prevalence results: AI-related outcomes in breast cancer populations")
 
 exportIncidencePrevalenceResults(result=study_results, 
-                                 zipName=paste0(db.name, "IncPrevTxBreastResults"),
-                                 outputFolder=here("Results", db.name, "2_EndocrineTx")) 
+                                 zipName=paste0(db.name, "IncPrevAIOutcomesBreastResults"),
+                                 outputFolder=here("Results", db.name, "3_OsteoDx")) 
 
-print(paste0("- Exported incidence and prevalence results: endocrine tx in breast cancer populations"))
-info(logger, "- Exported incidence and prevalence results: endocrine tx in breast cancer populations")
-
-
-## ===================== PLOTS FOR denominator_breast POP == 1 ===================== ##
+print(paste0("- Exported incidence and prevalence results: AI-related outcomes in breast cancer populations"))
+info(logger, "- Exported incidence and prevalence results: AI-related outcomes in breast cancer populations")
 
 
-print(paste0("- Plotting incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1"))
-info(logger, "- Plotting incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1")
+## ===================== PLOTS FOR denominator_breast_AI POP == 1 ===================== ##
 
-# POINT PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+
+print(paste0("- Plotting incidence and prevalence results: AI-related outcomes in breast cancer populations denominator_breast_AI 1"))
+info(logger, "- Plotting incidence and prevalence results: AI-related outcomes in breast cancer populations denominator_breast_AI 1")
+
+# POINT PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 point_prev_yrs_plot <- study_results$prevalence_estimates %>% 
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_id == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_id == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_id == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_id == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_id == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 point_prev_yrs_plot <- 
@@ -242,7 +246,7 @@ point_prev_yrs_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Years Before and After COVID-19 Lockdown") +
+  ggtitle("Point Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Years Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -250,22 +254,25 @@ point_prev_yrs_plot <-
 print(point_prev_yrs_plot)
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_breast", db.name,  ".pdf")
+plotname <- paste0("point_prev_yrs", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name ,plotname),
     width = 10, height = 8)
 print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# POINT PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
 point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 point_prev_months_plot <- 
@@ -278,7 +285,7 @@ point_prev_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown") +
+  ggtitle("Point Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -286,23 +293,26 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_breast", db.name, ".pdf")
+plotname <- paste0("point_prev_months", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name, "2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(point_prev_months_plot, newpage = FALSE)
 dev.off()
 
 
 
-# PERIOD PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_yrs_plot <- 
@@ -315,7 +325,7 @@ per_prev_yrs_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown") +
+  ggtitle("Period Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -323,21 +333,24 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_breast", db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN MONTHS FOR ALL AGE  STRATA
 
 per_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_months_plot <- 
@@ -350,7 +363,7 @@ per_prev_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown") +
+  ggtitle("Period Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -359,21 +372,24 @@ per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_breast",db.name,  ".pdf")
+plotname <- paste0("per_prev_months",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# INCIDENCE IN YEARS FOR ALL AGE STRATA
 
 inc_yrs_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_yrs_plot <- 
@@ -383,7 +399,7 @@ inc_yrs_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown") +
+  ggtitle("Incidence Rates of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -391,9 +407,9 @@ inc_yrs_plot <-
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_breast",db.name,  ".pdf")
+plotname <- paste0("inc_yrs",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(inc_yrs_plot, newpage = FALSE)
 dev.off()
@@ -401,14 +417,17 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
+# INCIDENCE IN MONTHS FOR ALL AGE STRATA 
 
 inc_months_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_months_plot <- 
@@ -418,7 +437,7 @@ inc_months_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown") +
+  ggtitle("Incidence Rates of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -426,27 +445,30 @@ inc_months_plot <-
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months_breast", db.name, ".pdf")
+plotname <- paste0("inc_months", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 8)
 print(inc_months_plot, newpage = FALSE)
 dev.off()
 
-print(paste0("- Plots of incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1 done"))
-info(logger, "- Plots of incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1 done")
+print(paste0("- Plots of incidence and prevalence results: AI-related outcomes in breast cancer populations denominator_breast_AI 1 done"))
+info(logger, "- Plots of incidence and prevalence results: AI-related outcomes in breast cancer populations denominator_breast_AI 1 done")
 
-# ========= PLOTS STRATIFIED BY AGE AND SEX ================================== #
+# ========= PLOTS STRATIFIED BY AGE  ================================== #
 
-print(paste0("- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age and sex"))
-info(logger, "- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age and sex")
+print(paste0("- Plotting incidence and prevalence results: AI-related outcomes in breast cancer populations stratified by age"))
+info(logger, "- Plotting incidence and prevalence results: AI-related outcomes in breast cancer populations stratified by age ")
 
-# POINT PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN YEARS STRATIFIED BY AGE 
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   
   as.data.frame()
 
@@ -460,8 +482,8 @@ point_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Point Prevalence of Aromatase Inhibitor Related Outcomes Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -469,21 +491,24 @@ point_prev_yrs_plot_s <-
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_breast_s",db.name, ".pdf")
+plotname <- paste0("point_prev_yrs_s",db.name, "3_OsteoDx",".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN MONTHS STRATIFIED BY AGE
 
 point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 point_prev_months_plot_s <- 
@@ -496,8 +521,8 @@ point_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group))
+  ggtitle("Point Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -505,21 +530,24 @@ point_prev_months_plot_s <-
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_breast_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_months_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-# PERIOD PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN YEARS STRATIFIED BY AGE
 
 per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_yrs_plot_s <- 
@@ -532,8 +560,8 @@ per_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group))
+  ggtitle("Period Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -541,20 +569,23 @@ per_prev_yrs_plot_s <-
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_breast_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN MONTHS STRATIFIED BY AGE 
 
 per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_months_plot_s <- 
@@ -567,8 +598,8 @@ per_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Period Prevalence of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -577,20 +608,23 @@ per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_breast_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
+# INCIDENCE IN YEARS STRATIFIED BY AGE
 
 inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_yrs_plot_s <- 
@@ -600,8 +634,8 @@ inc_yrs_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -609,9 +643,9 @@ inc_yrs_plot_s <-
 inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_breast_s",db.name,".pdf")
+plotname <- paste0("inc_yrs_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 12)
 print(inc_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -619,13 +653,16 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
+# INCIDENCE IN MONTHS STRATIFIED BY AGE
 
 inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
   filter(analysis_outcome_washout == NULL) %>% 
-  mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
-                             outcome_cohort_name == "Tamoxifen" ~ "Tamoxifen")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_months_plot_s <- 
@@ -635,8 +672,8 @@ inc_months_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Aromatase Inhibitor Related Outcomes in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -644,19 +681,19 @@ inc_months_plot_s <-
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_breast_s", db.name, ".pdf")
+plotname <- paste0("inc_months_s", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 12)
 print(inc_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age and sex done"))
-info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age and sex done")
+print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age done"))
+info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age done")
 
-print(paste0("- Analysis of all Endocrine Treatments in Breast Cancer done"))
-info(logger, "- Analysis of all Endocrine Treatments in Breast Cancer done")
+print(paste0("- Analysis of Aromatase Inhibitor Related Outcomes in Breast Cancer done"))
+info(logger, "- Analysis of Aromatase Inhibitor Related Outcomes in Breast Cancer done")
 
 
 
@@ -711,9 +748,9 @@ info(logger, "- Getting point prevalence endocrine tx in prostate cancer populat
 point_prev_yrs <- estimatePointPrevalence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "years",
   timePoint = "start",
@@ -729,9 +766,9 @@ point_prev_yrs %>%
 point_prev_months <- estimatePointPrevalence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId,# add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId,# add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "months",
   timePoint = "start",
@@ -755,9 +792,9 @@ info(logger, "- Getting period prevalence endocrine tx in prostate cancer popula
 per_prev_yrs <- estimatePeriodPrevalence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "years",
   completeDatabaseIntervals = FALSE,
@@ -774,9 +811,9 @@ per_prev_yrs %>%
 per_prev_months <- estimatePeriodPrevalence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   outcomeLookbackDays = 365,
   interval = "Months",
   completeDatabaseIntervals = FALSE,
@@ -791,7 +828,7 @@ per_prev_months %>%
 print(paste0("- Got period prevalence endocrine tx in prostate cancer populations"))
 info(logger, "- Got period prevalence endocrine tx in prostate cancer populations")
 
-save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "2_EndocrineTx", "PrevTxProstate.RData"))
+save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "3_OsteoDx", "PrevTxProstate.RData"))
 
 ## ======================== CALCULATE INCIDENCE ============================= ##
 
@@ -802,9 +839,9 @@ info(logger, "- Getting incidence endocrine tx in prostate cancer populations")
 inc_yrs <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = outcome_cohorts_3$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName,
   interval = "years",
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365), # might not need this line if my cohort definition only includes first event only
@@ -821,9 +858,9 @@ inc_yrs %>%
 inc_months <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator_prostate",
-  outcomeTable = outcome_table_name_2,  
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
-  outcomeCohortName = outcome_cohorts_2$cohortName, 
+  outcomeTable = outcome_table_name_3,  
+  outcomeCohortId = outcome_cohorts_3$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to prostate cancer
+  outcomeCohortName = outcome_cohorts_3$cohortName, 
   interval = "months",
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365), # might not need this line if my cohort definition only includes first event only
@@ -835,7 +872,7 @@ inc_months <- estimateIncidence(
 inc_months %>%
   glimpse()
 
-save(inc_yrs, inc_months, file = here("Results", db.name, "2_EndocrineTx", "IncTxProstate.RData"))
+save(inc_yrs, inc_months, file = here("Results", db.name, "3_OsteoDx", "IncTxProstate.RData"))
 
 
 print(paste0("- Got incidence: endocrine tx in prostate cancer populations"))
@@ -853,7 +890,7 @@ study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
 
 
 # save study results as a separate R.data file
-save(study_results, file = here("Results", db.name, "2_EndocrineTx", "StudyResults_TxProstate.RData"))
+save(study_results, file = here("Results", db.name, "3_OsteoDx", "StudyResults_TxProstate.RData"))
 
 print(paste0("- Got incidence and prevalence results: endocrine tx in prostate cancer populations"))
 info(logger, "- Got incidence and prevalence results: endocrine tx in prostate cancer populations")
@@ -866,7 +903,7 @@ info(logger, "- Exporting incidence and Prevalence results: endocrine tx in pros
 
 exportIncidencePrevalenceResults(result=study_results, 
                                  zipName=paste0(db.name, "IncPrevTxProstateResults"),
-                                 outputFolder=here("Results", db.name, "2_EndocrineTx")) 
+                                 outputFolder=here("Results", db.name)) 
 
 print(paste0("- Exported incidence and prevalence results: endocrine tx in prostate cancer populations"))
 info(logger, "- Exported incidence and prevalence results: endocrine tx in prostate cancer populations")
@@ -908,9 +945,9 @@ point_prev_yrs_plot <-
 print(point_prev_yrs_plot)
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_prostate", db.name, ".pdf")
+plotname <- paste0("point_prev_yrs", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name ,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name ,plotname),
     width = 10, height = 8)
 print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
@@ -922,9 +959,11 @@ point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amen
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 point_prev_months_plot <- 
@@ -945,9 +984,9 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_prostate", db.name,  ".pdf")
+plotname <- paste0("point_prev_months", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(point_prev_months_plot, newpage = FALSE)
 dev.off()
@@ -960,9 +999,11 @@ per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend thi
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_yrs_plot <- 
@@ -983,9 +1024,9 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_prostate", db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
@@ -996,9 +1037,11 @@ per_prev_months_plot <- study_results$prevalence_estimates %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_months_plot <- 
@@ -1020,9 +1063,9 @@ per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_prostate",db.name,  ".pdf")
+plotname <- paste0("per_prev_months",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
@@ -1033,9 +1076,11 @@ inc_yrs_plot <- study_results$incidence_estimates %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_yrs_plot <- 
@@ -1053,9 +1098,9 @@ inc_yrs_plot <-
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_prostate",db.name,  ".pdf")
+plotname <- paste0("inc_yrs",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 8)
 print(inc_yrs_plot, newpage = FALSE)
 dev.off()
@@ -1069,9 +1114,11 @@ inc_months_plot <- study_results$incidence_estimates %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_months_plot <- 
@@ -1089,9 +1136,9 @@ inc_months_plot <-
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months_prostate", db.name,  ".pdf")
+plotname <- paste0("inc_months", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 8)
 print(inc_months_plot, newpage = FALSE)
 dev.off()
@@ -1108,9 +1155,11 @@ info(logger, "- Plotting incidence and prevalence results: endocrine tx in prost
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   
   as.data.frame()
 
@@ -1124,7 +1173,7 @@ point_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1133,9 +1182,9 @@ point_prev_yrs_plot_s <-
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_yrs_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -1146,9 +1195,11 @@ dev.off()
 point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 point_prev_months_plot_s <- 
@@ -1161,7 +1212,7 @@ point_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1170,9 +1221,9 @@ point_prev_months_plot_s <-
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_prostate_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_months_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
@@ -1183,9 +1234,11 @@ dev.off()
 per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_yrs_plot_s <- 
@@ -1198,7 +1251,7 @@ per_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1207,9 +1260,9 @@ per_prev_yrs_plot_s <-
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -1219,9 +1272,11 @@ dev.off()
 per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 per_prev_months_plot_s <- 
@@ -1234,7 +1289,7 @@ per_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1244,9 +1299,9 @@ per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_prostate_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_plot_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 10, height = 10)
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
@@ -1256,9 +1311,11 @@ dev.off()
 inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_outcome_washout == NULL) %>% 
   filter(analysis_interval == "years") %>%
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_yrs_plot_s <- 
@@ -1268,7 +1325,7 @@ inc_yrs_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1277,9 +1334,9 @@ inc_yrs_plot_s <-
 inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("inc_yrs_s",db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 12)
 print(inc_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -1292,9 +1349,11 @@ dev.off()
 inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
   filter(analysis_outcome_washout == NULL) %>% 
-  mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
-                             outcome_cohort_name == "LHRHAntagonists" ~ "GnRH (LHRH) Antagonists",
-                             outcome_cohort_name == "AndrogenDeprivationTherapy(withGnRH)" ~ "Androgen Deprivation Therapy with GnRH")) %>% 
+  mutate(outcome = case_when(outcome_cohort_name == "Bisphosphonates" ~ "Bisphosphonates",
+                             outcome_cohort_name == "BoneFracture" ~ "Bone Fracture",
+                             outcome_cohort_name == "Denosumab" ~ "Denosumab",
+                             outcome_cohort_name == "Osteopenia" ~ "Osteopenia",
+                             outcome_cohort_name == "Osteoporosis" ~ "Osteoporosis"))
   as.data.frame()
 
 inc_months_plot_s <- 
@@ -1304,7 +1363,7 @@ inc_months_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  facet_grid(rows=vars(denominator_age_group)) +
   ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -1313,9 +1372,9 @@ inc_months_plot_s <-
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_prostate_s", db.name,  ".pdf")
+plotname <- paste0("inc_months_s", db.name, "3_OsteoDx", ".pdf")
 
-pdf(here("Results", db.name,"2_EndocrineTx",plotname),
+pdf(here("Results", db.name,plotname),
     width = 12, height = 12)
 print(inc_months_plot_s, newpage = FALSE)
 dev.off()

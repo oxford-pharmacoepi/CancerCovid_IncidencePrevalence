@@ -130,7 +130,7 @@ per_prev_months %>%
 print(paste0("- Got period prevalence: cancer populations"))
 info(logger, "- Got period prevalence: cancer populations")
 
-save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "prev.RData"))
+save(point_prev_yrs, point_prev_months, per_prev_months, per_prev_yrs, file = here("Results", db.name, "1_Cancers", "prev.RData"))
 
 ## ======================== CALCULATE INCIDENCE ============================= ##
 
@@ -175,7 +175,7 @@ inc_months %>%
   glimpse()
 
 #save(inc_yrs, file = here("Results", "inc.RData"))
-save(inc_yrs, inc_months, file = here("Results", "inc.RData"))
+save(inc_yrs, inc_months, file = here("Results", db.name, "1_Cancers", "inc.RData"))
 
 
 print(paste0("- Got incidence: cancer populations"))
@@ -193,7 +193,7 @@ study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
 
 
 # save study results as a separate R.data file
-save(study_results, file = here("Results", db.name, "StudyResults_cancers.RData"))
+save(study_results, file = here("Results", db.name, "1_Cancers", "StudyResults_cancers.RData"))
 
 print(paste0("- Got incidence and prevalence results: cancer populations"))
 info(logger, "- Got incidence and prevalence results: cancer populations")
@@ -250,7 +250,7 @@ print(point_prev_yrs_plot)
 # save the plot as pdf
 plotname <- paste0("point_prev_yrs", db.name, ".pdf")
 
-pdf(here("Results", db.name ,plotname),
+pdf(here("Results", db.name , "1_Cancers",plotname),
     width = 10, height = 8)
 print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
@@ -286,9 +286,9 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months", db.name, ".pdf")
+plotname <- paste0("point_prev_months", db.name,".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
 print(point_prev_months_plot, newpage = FALSE)
 dev.off()
@@ -325,9 +325,9 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs", db.name,".pdf")
+plotname <- paste0("per_prev_yrs", db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
@@ -365,7 +365,7 @@ per_prev_months_plot
 # save the plot as pdf
 plotname <- paste0("per_prev_months",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
@@ -399,7 +399,7 @@ inc_yrs_plot
 # save the plot as pdf
 plotname <- paste0("inc_yrs",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
 print(inc_yrs_plot, newpage = FALSE)
 dev.off()
@@ -436,7 +436,7 @@ inc_months_plot
 # save the plot as pdf
 plotname <- paste0("inc_months", db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 8)
 print(inc_months_plot, newpage = FALSE)
 dev.off()
@@ -481,7 +481,7 @@ point_prev_yrs_plot_s
 # save the plot as pdf
 plotname <- paste0("point_prev_yrs_s",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
 print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -519,7 +519,7 @@ point_prev_months_plot_s
 # save the plot as pdf
 plotname <- paste0("point_prev_months_plot_s",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
 print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
@@ -557,7 +557,7 @@ per_prev_yrs_plot_s
 # save the plot as pdf
 plotname <- paste0("per_prev_yrs_plot_s",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -595,7 +595,7 @@ per_prev_months_plot_s
 # save the plot as pdf
 plotname <- paste0("per_prev_months_plot_s",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
@@ -629,7 +629,7 @@ inc_yrs_plot_s
 # save the plot as pdf
 plotname <- paste0("inc_yrs_s",db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 12)
 print(inc_yrs_plot_s, newpage = FALSE)
 dev.off()
@@ -666,7 +666,7 @@ inc_months_plot_s
 # save the plot as pdf
 plotname <- paste0("inc_months_s", db.name, ".pdf")
 
-pdf(here("Results", db.name,plotname),
+pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 12)
 print(inc_months_plot_s, newpage = FALSE)
 dev.off()

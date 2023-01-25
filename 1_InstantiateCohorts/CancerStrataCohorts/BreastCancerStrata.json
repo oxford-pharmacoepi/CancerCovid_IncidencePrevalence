@@ -1415,9 +1415,10 @@
         "ConditionOccurrence": {
           "CodesetId": 0,
           "OccurrenceStartDate": {
-            "Value": "2015-01-01",
+            "Value": "2016-01-01",
             "Op": "gte"
-          }
+          },
+          "First": true
         }
       }
     ],
@@ -1426,7 +1427,7 @@
       "PostDays": 0
     },
     "PrimaryCriteriaLimit": {
-      "Type": "All"
+      "Type": "First"
     }
   },
   "QualifiedLimit": {
@@ -1439,7 +1440,7 @@
   "EndStrategy": {
     "DateOffset": {
       "DateField": "StartDate",
-      "Offset": 0
+      "Offset": 365
     }
   },
   "CensoringCriteria": [],
