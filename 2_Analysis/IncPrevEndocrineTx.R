@@ -55,7 +55,7 @@ point_prev_yrs <- estimatePointPrevalence(
   cdm = cdm,
   denominatorTable = "denominator_breast",
   outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer
+  outcomeCohortId = outcome_cohorts_2$cohortId, # add a filter here to specify which outcome cohorts to focus on specific to breast cancer, c(2, 5)
   outcomeCohortName = outcome_cohorts_2$cohortName,
   outcomeLookbackDays = 365,
   interval = "years",
@@ -222,7 +222,7 @@ info(logger, "- Exported incidence and prevalence results: endocrine tx in breas
 print(paste0("- Plotting incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1"))
 info(logger, "- Plotting incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1")
 
-# POINT PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# POINT PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 point_prev_yrs_plot <- study_results$prevalence_estimates %>% 
   filter(denominator_cohort_id == 1) %>% 
@@ -258,7 +258,7 @@ print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# POINT PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
 point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(denominator_cohort_id == 1) %>%
@@ -295,7 +295,7 @@ dev.off()
 
 
 
-# PERIOD PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
@@ -330,7 +330,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
 per_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -366,7 +366,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# INCIDENCE IN YEARS FOR ALL AGE STRATA
 
 inc_yrs_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -401,7 +401,7 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
+# INCIDENCE IN MONTHS FOR ALL AGE STRATA 
 
 inc_months_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -436,12 +436,12 @@ dev.off()
 print(paste0("- Plots of incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1 done"))
 info(logger, "- Plots of incidence and prevalence results: endocrine tx in breast cancer populations denominator_breast 1 done")
 
-# ========= PLOTS STRATIFIED BY AGE AND SEX ================================== #
+# ========= PLOTS Stratified by Age ================================== #
 
-print(paste0("- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age and sex"))
-info(logger, "- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age and sex")
+print(paste0("- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age"))
+info(logger, "- Plotting incidence and prevalence results: endocrine tx in breast cancer populations stratified by age")
 
-# POINT PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN YEARS Stratified by Age
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
@@ -460,8 +460,8 @@ point_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -477,7 +477,7 @@ print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN MONTHS Stratified by Age
 
 point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(analysis_type == "point") %>% 
@@ -496,8 +496,8 @@ point_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Point Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -513,7 +513,7 @@ print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-# PERIOD PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN YEARS Stratified by Age
 
 per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
@@ -532,8 +532,8 @@ per_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -548,7 +548,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN MONTHS Stratified by Age
 
 per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
@@ -567,8 +567,8 @@ per_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Period Prevalence of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -584,7 +584,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
+# INCIDENCE IN YEARS Stratified by Age
 
 inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_outcome_washout == NULL) %>% 
@@ -600,8 +600,8 @@ inc_yrs_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -619,7 +619,7 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
+# INCIDENCE IN MONTHS Stratified by Age 
 
 inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
@@ -635,8 +635,8 @@ inc_months_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Endocrine Treatments in Breast Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -652,8 +652,8 @@ print(inc_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age and sex done"))
-info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer stratified by age and sex done")
+print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer Stratified by Age done"))
+info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Breast Cancer Stratified by Age done")
 
 print(paste0("- Analysis of all Endocrine Treatments in Breast Cancer done"))
 info(logger, "- Analysis of all Endocrine Treatments in Breast Cancer done")
@@ -878,7 +878,7 @@ info(logger, "- Exported incidence and prevalence results: endocrine tx in prost
 print(paste0("- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations denominator_prostate 1"))
 info(logger, "- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations denominator_prostate 1")
 
-# POINT PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# POINT PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 point_prev_yrs_plot <- study_results$prevalence_estimates %>% 
   filter(denominator_cohort_id == 1) %>% 
@@ -916,7 +916,7 @@ print(point_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# POINT PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
 point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(denominator_cohort_id == 1) %>%
@@ -954,7 +954,7 @@ dev.off()
 
 
 
-# PERIOD PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN YEARS FOR ALL AGE STRATA
 
 per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(denominator_cohort_id == 1) %>%
@@ -990,7 +990,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_yrs_plot, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
+# PERIOD PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
 per_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -1027,7 +1027,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_months_plot, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
+# INCIDENCE IN YEARS FOR ALL AGE STRATA
 
 inc_yrs_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -1063,7 +1063,7 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
+# INCIDENCE IN MONTHS FOR ALL AGE STRATA 
 
 inc_months_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
@@ -1099,12 +1099,12 @@ dev.off()
 print(paste0("- Plots of incidence and prevalence results: endocrine tx in prostate cancer populations denominator_prostate 1 done"))
 info(logger, "- Plots of incidence and prevalence results: endocrine tx in prostate cancer populations denominator_prostate 1 done")
 
-# ========= PLOTS STRATIFIED BY AGE AND SEX ================================== #
+# ========= PLOTS Stratified by Age ================================== #
 
-print(paste0("- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations stratified by age and sex"))
-info(logger, "- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations stratified by age and sex")
+print(paste0("- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations Stratified by Age"))
+info(logger, "- Plotting incidence and prevalence results: endocrine tx in prostate cancer populations Stratified by Age")
 
-# POINT PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN YEARS Stratified by Age
 point_prev_yrs_plot_s <- study_results$prevalence_estimates %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
@@ -1124,8 +1124,8 @@ point_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1141,7 +1141,7 @@ print(point_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
 
-# POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# POINT PREVALENCE IN MONTHS Stratified by Age
 
 point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
   filter(analysis_type == "point") %>% 
@@ -1161,8 +1161,8 @@ point_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Point Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1178,7 +1178,7 @@ print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-# PERIOD PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN YEARS Stratified by Age
 
 per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
@@ -1198,8 +1198,8 @@ per_prev_yrs_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1214,7 +1214,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_yrs_plot_s, newpage = FALSE)
 dev.off()
 
-# PERIOD PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
+# PERIOD PREVALENCE IN MONTHS Stratified by Age
 
 per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_type == "period") %>% 
@@ -1234,8 +1234,8 @@ per_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Period Prevalence of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1251,7 +1251,7 @@ pdf(here("Results", db.name,"2_EndocrineTx",plotname),
 print(per_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
-# INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
+# INCIDENCE IN YEARS Stratified by Age
 
 inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
   filter(analysis_outcome_washout == NULL) %>% 
@@ -1268,8 +1268,8 @@ inc_yrs_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1287,7 +1287,7 @@ dev.off()
 
 
 
-# INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
+# INCIDENCE IN MONTHS Stratified by Age 
 
 inc_months_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_interval == "months") %>%
@@ -1304,8 +1304,8 @@ inc_months_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
-  facet_grid(~denominator_age_group ~denominator_sex) +
-  ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
+  facet_grid(rows=vars(denominator_age_group)) +
+  ggtitle("Incidence Rates of Endocrine Treatments in Prostate Cancer in Months Before and After COVID-19 Lockdown Stratified by Age") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -1321,8 +1321,8 @@ print(inc_months_plot_s, newpage = FALSE)
 dev.off()
 
 
-print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Prostate Cancer stratified by age and sex done"))
-info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Prostate Cancer stratified by age and sex done")
+print(paste0("- Plots of incidence and prevalence results: Endocrine Treatments in Prostate Cancer Stratified by Age done"))
+info(logger, "- Plots of incidence and prevalence results: Endocrine Treatments in Prostate Cancer Stratified by Age done")
 
 print(paste0("- Analysis of all Endocrine Treatments in Prostate Cancer done"))
 info(logger, "- Analysis of all Endocrine Treatments in Prostate Cancer done")
