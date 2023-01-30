@@ -9,46 +9,98 @@ library(WebPower)
 install.packages("pwr")
 library(pwr)
 
-# sample size calculation for incidence and prevalence:
+# =============== sample size calculation for objective 1 and 4 ============== #
 
-# incidence
+# characterising counts of measurements and procedures etc. before and after lockdown
+# simple sample size calculation of proportions, assuming there are small differences before and after lockdown
+# assuming small effect size of 0.2
+
+pwr.2p.test(h=0.2, sig.level=0.05, power=.80, alternative="two.sided")
+
+# Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+
+# h = 0.2
+# n = 392.443
+# sig.level = 0.05
+# power = 0.8
+# alternative = two.sided
+
+
+
+# ============ sample size calculation for incidence ========================= #
+
+# incidence based on Coma et al (2020)
 # base rate and change after lockdown come from the supplementary material from the Coma et al 2020 paper 
 # on average they observed incidence rates of 72.4 for all cancer combined before lockdown 
 # compared to 54.6 after lockdown)
+# In the erap protocol we write: "For objective 2 it is possible to derive a possible 
+# effect size measure from previous literature. For example, Coma et al. (2020) report 
+# the monthly average incidence of all cancers before lockdown as 72.4 per 100,000 person years, 
+# compared to 54.6 after lockdown. Using these estimates, a sample of 56.78 individuals 
+# would be required to replicate these findings." 
+
+exp0 <- exp(72.4/100000)  # Expect the base rate (intercept) for cancer is 72.4 (per 100,000), so exp0 = exp(72.4/100000) = 1.000724
+slope <- exp(-1.02) # Expect the relative increase of the event rate (slope) to be -1.02, so exp1 = exp(-1.02) = 0.36. Note that this is estimated
+
+wp.poisson(exp0=exp0, exp1=slope, alpha=0.05, power=0.80, alternative ="two.sided", family="Bernoulli")
+
+#Power for Poisson regression
+
+#n power alpha     exp0      exp1    beta0 beta1
+#56.88938   0.8  0.05 1.000724 0.3605949 0.000724 -1.02
 
 
-exp0 <- 72.4/100000 
-slope <- exp(1) # this is estimated - not sure about this
+# ============ sample size calculation for prevalence ======================== #
 
-wp.poisson(exp0=1.0005, exp1=0.36, alpha=0.05, power=0.80, alternative ="two.sided", family="Bernoulli")
+# For prevalence there are currently no published rates of cancers before and after lockdown. 
+# As such we have calculated post-hoc power based on our preliminary analyses. As an 
+# example, prevalence of breast cancer was reduced by ~0.125% immediately following lockdown. 
+# Using this estimate in post-hoc power analyses yields power of 88% to identify changes 
+# in prevalence as large as observed based on our sample size of 9319 patients with breast cancer.
 
-
-
-# prevalence
-# effect size measure for proportions where the expected prevalence of a cancer in the general population is 
+# calculate effect size based on two prevalence rates
 x <- sqrt(0.0875) # this is roughly the point prevalence of breast cancer observed just before lockdown based on my preliminary analyses
 y <- sqrt(0.075) # this is roughly the point prevalence of breast cancer observed just after lockdown based on my preliminary analyses
 
 
-h <- (2*asin(x)-(2*asin(y))) # this comes from here as a test for two proportions 
+effect_s <- (2*asin(x)-(2*asin(y))) # this comes from here as a test for two proportions 
 # https://med.und.edu/research/daccota/_files/pdfs/berdc_resource_pdfs/sample_size_r_module.pdf
 
-effect_s <- print(h)
+print(effect_s)
 
 # get estimated sample size given power
-# sample size required = 7489
 pwr.2p.test(h=(effect_s), sig.level=0.05, power=0.80, alternative="two.sided")
 
+#Difference of proportion power calculation for binomial distribution (arcsine transformation) 
+
+#h = 0.04578309
+#n = 7489.043
+#sig.level = 0.05
+#power = 0.8
+#alternative = two.sided
+
+
+
+
+# ============ post-hoc power calculation for prevalence ===================== #
 
 # get post-hoc power given the sample size observed and the preliminary results observed
-# power = 0.878
+
 pwr.2p.test(h=(effect_s), n=9319, sig.level=0.05, alternative="two.sided")
 
+# power = 0.878
 
 
 
+# ============= Estimate of sample size in denominator based on prior simulation study
+# Hawley et al (2019)
 
-# Calculating sample size for survival analysis:
+3000*(3.5/0.12)
+
+
+
+# ============== Calculating sample size for survival analysis =============== #
+
 # see here: https://cran.r-project.org/web/packages/powerSurvEpi/powerSurvEpi.pdf
 
 # vary the theta value to examine smaller hazard ratio. "Small, medium, and large HRs comparing 2
