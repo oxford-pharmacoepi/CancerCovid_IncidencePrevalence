@@ -1,3 +1,16 @@
+# ============================================================================ #
+#                 CODE TO RUN FOR CANCER/COVID INCIDENCE/PREVALENCE            #
+#   ANALYSES - CANCERS, ENDOCRINE TREATMENTS, OSTEOPOROSIS-RELATED OUTCOMES,   #
+#                              AND SCREENING TESTS                             #
+#                                Nicola Barclay                                #
+#                                 31-01-2023                                   #
+#                                                                              #
+#             THIS SHOULD BE THE ONLY FILE YOU NEED TO INTERACT WITH           #
+#                                                                              #
+# ============================================================================ #
+
+
+
 # Load packages ------
 
 # to install latest version of IncidencePrevalence
