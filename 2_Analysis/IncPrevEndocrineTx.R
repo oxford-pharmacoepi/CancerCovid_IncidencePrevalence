@@ -250,7 +250,8 @@ point_prev_yrs_plot <-
 print(point_prev_yrs_plot)
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_breast", db.name,  ".pdf")
+analysis.name <- "endocrinetx"
+plotname <- paste0("point_prev_yrs_breast", db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -260,7 +261,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
-point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
@@ -286,7 +287,7 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_breast", db.name, ".pdf")
+plotname <- paste0("point_prev_months_breast", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name, "2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -323,7 +324,7 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_breast", db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_breast", db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -359,7 +360,7 @@ per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_breast",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_breast",db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -391,7 +392,7 @@ inc_yrs_plot <-
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_breast",db.name,  ".pdf")
+plotname <- paste0("inc_yrs_breast",db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -426,7 +427,7 @@ inc_months_plot <-
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months_breast", db.name, ".pdf")
+plotname <- paste0("inc_months_breast", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 8)
@@ -469,7 +470,7 @@ point_prev_yrs_plot_s <-
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_breast_s",db.name, ".pdf")
+plotname <- paste0("point_prev_yrs_breast_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -479,7 +480,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS Stratified by Age
 
-point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot_s <- study_results$prevalence_estimates %>%  
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "AromataseInhibitors" ~ "Aromatase Inhibitors",
@@ -505,7 +506,7 @@ point_prev_months_plot_s <-
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_breast_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_months_breast_s",db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -541,7 +542,7 @@ per_prev_yrs_plot_s <-
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_breast_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_breast_s",db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -577,7 +578,7 @@ per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_breast_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_breast_s",db.name, analysis.name,  ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -609,7 +610,7 @@ inc_yrs_plot_s <-
 inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_breast_s",db.name,".pdf")
+plotname <- paste0("inc_yrs_breast_s",db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 12)
@@ -644,7 +645,7 @@ inc_months_plot_s <-
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_breast_s", db.name, ".pdf")
+plotname <- paste0("inc_months_breast_s", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 12)
@@ -908,7 +909,7 @@ point_prev_yrs_plot <-
 print(point_prev_yrs_plot)
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_prostate", db.name, ".pdf")
+plotname <- paste0("point_prev_yrs_prostate", db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name ,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -918,7 +919,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS FOR ALL AGE STRATA
 
-point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
@@ -945,7 +946,7 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_prostate", db.name,  ".pdf")
+plotname <- paste0("point_prev_months_prostate", db.name,  analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -983,7 +984,7 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_prostate", db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_prostate", db.name,  analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -1020,7 +1021,7 @@ per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_prostate",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_prostate",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -1053,7 +1054,7 @@ inc_yrs_plot <-
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_prostate",db.name,  ".pdf")
+plotname <- paste0("inc_yrs_prostate",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 8)
@@ -1089,7 +1090,7 @@ inc_months_plot <-
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months_prostate", db.name,  ".pdf")
+plotname <- paste0("inc_months_prostate", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 8)
@@ -1133,7 +1134,7 @@ point_prev_yrs_plot_s <-
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_yrs_prostate_s",db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -1143,7 +1144,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS Stratified by Age
 
-point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot_s <- study_results$prevalence_estimates %>%  
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "GnRHAgonsists(noADT)" ~ "GnRH (LHRH) Agonists Monotherapy",
@@ -1170,7 +1171,7 @@ point_prev_months_plot_s <-
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_prostate_s",db.name,  ".pdf")
+plotname <- paste0("point_prev_months_prostate_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -1207,7 +1208,7 @@ per_prev_yrs_plot_s <-
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_yrs_prostate_s",db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -1244,7 +1245,7 @@ per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_prostate_s",db.name,  ".pdf")
+plotname <- paste0("per_prev_months_prostate_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 10, height = 10)
@@ -1277,7 +1278,7 @@ inc_yrs_plot_s <-
 inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_prostate_s",db.name,  ".pdf")
+plotname <- paste0("inc_yrs_prostate_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 12)
@@ -1313,7 +1314,7 @@ inc_months_plot_s <-
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_prostate_s", db.name,  ".pdf")
+plotname <- paste0("inc_months_prostate_s", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"2_EndocrineTx",plotname),
     width = 12, height = 12)

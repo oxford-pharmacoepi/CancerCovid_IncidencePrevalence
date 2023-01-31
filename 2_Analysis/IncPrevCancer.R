@@ -161,8 +161,8 @@ inc_months <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_1, 
-  outcomeCohortId = outcome_cohorts_1_1$cohortId,
-  outcomeCohortName = outcome_cohorts_1_1$cohortName,
+  outcomeCohortId = outcome_cohorts_1$cohortId,
+  outcomeCohortName = outcome_cohorts_1$cohortName,
   interval = "months",
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365),
@@ -206,7 +206,7 @@ info(logger, "- Exporting incidence and Prevalence results: cancer populations")
 
 exportIncidencePrevalenceResults(result=study_results, 
                                  zipName=paste0(db.name, "IncPrevCancerResults"),
-                                 outputFolder=here("Results", db.name)) 
+                                 outputFolder=here("Results", db.name, "1_Cancers")) 
 
 print(paste0("- Exported incidence and prevalence results: cancer populations"))
 info(logger, "- Exported incidence and prevalence results: cancer populations")
@@ -248,7 +248,8 @@ point_prev_yrs_plot <-
 print(point_prev_yrs_plot)
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs", db.name, ".pdf")
+analysis.name <- "cancers"
+plotname <- paste0("point_prev_yrs", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name , "1_Cancers",plotname),
     width = 10, height = 8)
@@ -258,7 +259,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
 
-point_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot <- study_results$prevalence_estimates %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
@@ -286,7 +287,7 @@ point_prev_months_plot <-
 point_prev_months_plot
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months", db.name,".pdf")
+plotname <- paste0("point_prev_months", db.name, analysis.name,".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
@@ -297,7 +298,7 @@ dev.off()
 
 # PERIOD PREVALENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
-per_prev_yrs_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+per_prev_yrs_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
@@ -325,7 +326,7 @@ per_prev_yrs_plot <-
 per_prev_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs", db.name, ".pdf")
+plotname <- paste0("per_prev_yrs", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
@@ -334,7 +335,7 @@ dev.off()
 
 # PERIOD PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
 
-per_prev_months_plot <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+per_prev_months_plot <- study_results$prevalence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
@@ -363,7 +364,7 @@ per_prev_months_plot
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months",db.name, ".pdf")
+plotname <- paste0("per_prev_months",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
@@ -372,7 +373,7 @@ dev.off()
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
-inc_yrs_plot <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+inc_yrs_plot <- study_results$incidence_estimates %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "years") %>%
@@ -397,7 +398,7 @@ inc_yrs_plot <-
 inc_yrs_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs",db.name, ".pdf")
+plotname <- paste0("inc_yrs",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 8)
@@ -434,7 +435,7 @@ inc_months_plot <-
 inc_months_plot
 
 # save the plot as pdf
-plotname <- paste0("inc_months", db.name, ".pdf")
+plotname <- paste0("inc_months", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 8)
@@ -479,7 +480,7 @@ point_prev_yrs_plot_s <-
 point_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_yrs_s",db.name, ".pdf")
+plotname <- paste0("point_prev_yrs_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
@@ -489,7 +490,7 @@ dev.off()
 
 # POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
 
-point_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to point_prev_yrs
+point_prev_months_plot_s <- study_results$prevalence_estimates %>%  
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -517,7 +518,7 @@ point_prev_months_plot_s <-
 point_prev_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("point_prev_months_plot_s",db.name, ".pdf")
+plotname <- paste0("point_prev_months_plot_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
@@ -527,7 +528,7 @@ dev.off()
 
 # PERIOD PREVALENCE IN YEARS STRATIFIED BY AGE AND SEX
 
-per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+per_prev_yrs_plot_s <- study_results$prevalence_estimates %>%  
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "years") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -555,7 +556,7 @@ per_prev_yrs_plot_s <-
 per_prev_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("per_prev_yrs_plot_s",db.name, ".pdf")
+plotname <- paste0("per_prev_yrs_plot_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
@@ -564,7 +565,7 @@ dev.off()
 
 # PERIOD PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
 
-per_prev_months_plot_s <- study_results$prevalence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+per_prev_months_plot_s <- study_results$prevalence_estimates %>%  
   filter(analysis_type == "period") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -593,7 +594,7 @@ per_prev_months_plot_s
 
 
 # save the plot as pdf
-plotname <- paste0("per_prev_months_plot_s",db.name, ".pdf")
+plotname <- paste0("per_prev_months_plot_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 10, height = 10)
@@ -602,7 +603,7 @@ dev.off()
 
 # INCIDENCE IN YEARS STRATIFIED BY AGE AND SEX
 
-inc_yrs_plot_s <- study_results$incidence_estimates %>%  # need to amend this bit of code to select the estimates relating to per_prev_yrs
+inc_yrs_plot_s <- study_results$incidence_estimates %>%  
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "years") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -627,7 +628,7 @@ inc_yrs_plot_s <-
 inc_yrs_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_yrs_s",db.name, ".pdf")
+plotname <- paste0("inc_yrs_s",db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 12)
@@ -664,7 +665,7 @@ inc_months_plot_s <-
 inc_months_plot_s
 
 # save the plot as pdf
-plotname <- paste0("inc_months_s", db.name, ".pdf")
+plotname <- paste0("inc_months_s", db.name, analysis.name, ".pdf")
 
 pdf(here("Results", db.name,"1_Cancers",plotname),
     width = 12, height = 12)

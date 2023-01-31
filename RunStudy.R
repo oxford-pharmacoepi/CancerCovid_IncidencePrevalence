@@ -15,6 +15,9 @@ if (!file.exists(output.folder2)){
 if (!file.exists(output.folder3)){
   dir.create(output.folder3, recursive = TRUE)}
 
+if (!file.exists(output.folder4)){
+  dir.create(output.folder4, recursive = TRUE)}
+
 start<-Sys.time()
 
 # start log ----
@@ -42,6 +45,11 @@ info(logger, 'INCIDENCE AND PREVALENCE ANALYSIS OF ENDOCRINE TREATMENTS RAN')
 info(logger, 'RUNNING INCIDENCE AND PREVALENCE ANALYSIS OF ENDOCRINE TREATMENT RELATED OUTCOMES')
 source(here("2_Analysis","IncPrevOsteoDx.R"))
 info(logger, 'INCIDENCE AND PREVALENCE ANALYSIS OF ENDOCRINE TREATMENT RELATED OUTCOMES RAN')
+
+# Run incidence analysis of screening tests as outcomes ----
+info(logger, 'RUNNING INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES')
+source(here("2_Analysis","IncPrevOsteoDx.R"))
+info(logger, 'INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES RAN')
 
 # add code for combining and exporting results
 

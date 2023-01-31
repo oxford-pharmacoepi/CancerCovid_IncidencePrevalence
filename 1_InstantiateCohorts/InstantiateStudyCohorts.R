@@ -98,3 +98,28 @@ cdm <- CDMConnector::generateCohortSet(cdm = cdm,
 cdm$osteo_dx_table %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got endocrine treatment related outcomes")
+
+
+
+# ============================================================================ #
+#                       6.  SCREENING TESTS AS OUTCOMES                        #
+# ============================================================================ #
+
+
+# instantiate cancer outcome cohorts
+info(logger, "- getting screening test outcomes")
+
+outcome_cohorts_4 <- CDMConnector::readCohortSet(here::here("1_InstantiateCohorts","ScreeningOutcomeCohorts"))
+
+
+
+
+cdm <- CDMConnector::generateCohortSet(cdm = cdm, 
+                                       cohortSet = outcome_cohorts_4,
+                                       cohortTableName = outcome_table_name_4,
+                                       overwrite = TRUE
+)
+
+cdm$screening_outcomes_table %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+
+info(logger, "- got screening test outcomes")

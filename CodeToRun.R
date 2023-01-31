@@ -31,6 +31,7 @@ output.folder<-here("Results", db.name)
 output.folder1<-here("Results", db.name, "1_Cancers")
 output.folder2<-here("Results", db.name, "2_EndocrineTx")
 output.folder3<-here("Results", db.name, "3_OsteoDx")
+output.folder4<-here("Results", db.name, "4_ScreeningTests")
 
 # Specify databaseConnector connection details -----
 # database connection details
@@ -72,6 +73,7 @@ strata_table_name_1 <- "breast_prostate_strata" # this is the breast and prostat
 outcome_table_name_2 <- "endocrine_tx_table" # this is the table for the endocrine treatments
 strata_table_name_2 <- "breast_prostate_endocrine_strata" # this is the table for the breast/prostate cancer diagnosis cohorts who are on endocrine treatments to be used as denominator strata
 outcome_table_name_3 <- "osteo_dx_table" # this is the table for the endocrine-treatment related outcomes of osteoporosis, osteopenia, bon fracture, bisphosphonates and denosumab
+outcome_table_name_4 <- "screening_outcomes_table" # this is the table for the screening tests as outcomes
 
 # create cdm reference ----
 cdm <- CDMConnector::cdm_from_con(con = db, 
