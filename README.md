@@ -1,7 +1,7 @@
 # CancerCovid_IncidencePrevalence
 All analyses of incidence and prevalence of cancers and cancer-related treatments, before and after the COVID-19 lockdown:
 - breast, colorectal, lung and prostate cancer; 
-- use of endocrine treatments in breast and prostate cancer (Aromatase Inhibitors, Tamoxifen, Andropgen Deprivation Therapy with GnRH, GnRH as monotherapy for prostate; LHRH antagonists);
+- use of endocrine treatments in breast and prostate cancer (Aromatase Inhibitors, Tamoxifen, Androgen Deprivation Therapy with GnRH, GnRH as monotherapy for prostate; LHRH antagonists);
 - associated treatment-related outcomes (osteoporosis, osteopenia, bone fracture, prescriptions of bisphosphonates and denosumab); 
 - screening tests relevant to all four cancers (mammograms, biopsy of breast, bowel cancer screening programmes, sigmoidoscopy, colonoscopy, bronchoscopy, prostate specific antigen tests).
 
