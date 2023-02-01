@@ -1,6 +1,7 @@
 # ============================================================================ #
 #                          Incidence/Prevalence for                            #
 #          Osteoporosis, osteopenia, bone fracture diagnoses                   #
+#                    and prescriptions of bisphosphonates and denosumab        #
 #                    in Breast and Prostate Cancer Cohorts                     #
 #                              Nicola Barclay                                  #
 #                                25-01-2023                                    #

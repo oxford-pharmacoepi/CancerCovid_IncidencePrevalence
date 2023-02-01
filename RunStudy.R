@@ -1,7 +1,3 @@
-# table names----
-#outcome_table_name<-paste0(outcome_table_stem,"_o")
-#strata_table_name<-paste0(outcome_table_stem,"_strata")
-
 # output files ----
 if (!file.exists(output.folder)){
   dir.create(output.folder, recursive = TRUE)}
@@ -48,7 +44,7 @@ info(logger, 'INCIDENCE AND PREVALENCE ANALYSIS OF ENDOCRINE TREATMENT RELATED O
 
 # Run incidence analysis of screening tests as outcomes ----
 info(logger, 'RUNNING INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES')
-source(here("2_Analysis","IncPrevOsteoDx.R"))
+source(here("2_Analysis","IncScreening.R"))
 info(logger, 'INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES RAN')
 
 # add code for combining and exporting results
