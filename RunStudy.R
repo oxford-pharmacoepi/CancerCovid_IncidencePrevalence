@@ -44,7 +44,7 @@ info(logger, 'INCIDENCE AND PREVALENCE ANALYSIS OF ENDOCRINE TREATMENT RELATED O
 
 # Run incidence analysis of screening tests as outcomes ----
 info(logger, 'RUNNING INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES')
-source(here("2_Analysis","IncS.R"))
+source(here("2_Analysis","IncScreening.R"))
 info(logger, 'INCIDENCE ANALYSIS OF SCREENING TESTS OUTCOMES RAN')
 
 # add code for combining and exporting results
