@@ -7,8 +7,8 @@
 
 ## =========================== BREAST CANCER ================================ ##
 
-print(paste0("- 1. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort"))
-info(logger, "- 1. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort")
+print(paste0("- 2. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort"))
+info(logger, "- 2. Incidence and Prevalence of Endocrine Treatments in Breast Cancer Cohort")
 
 ## =================== SET THE STRATA DENOMINATOR COHORTS ==================== ##
 

@@ -9,8 +9,8 @@
 
 ## ================== BREAST CANCER ON AROMATASE INHIBITORS ================= ##
 
-print(paste0("- 1. Incidence and Prevalence of AIs-Related Outcomes in Breast Cancer Cohort"))
-info(logger, "- 1. Incidence and Prevalence of AIs-Related Outcomes Breast Cancer Cohort")
+print(paste0("- 3. Incidence and Prevalence of AIs-Related Outcomes in Breast Cancer Cohort"))
+info(logger, "- 3. Incidence and Prevalence of AIs-Related Outcomes Breast Cancer Cohort")
 
 ## ====== SET THE STRATA DENOMINATOR COHORT BREAST CANCER ON AIS ============ ##
 

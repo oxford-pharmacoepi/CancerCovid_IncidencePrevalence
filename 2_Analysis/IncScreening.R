@@ -5,8 +5,8 @@
 #                                31-01-2023                                    #
 # ============================================================================ #
 
-print(paste0("- 1. Incidence of Screening tests"))
-info(logger, "- 1. Incidence of Screening tests")
+print(paste0("- 4. Incidence of Screening tests"))
+info(logger, "- 4. Incidence of Screening tests")
 
 ## ======= Compute the denominator population (\~7 minutes in CPRD GOLD) ==== ##
 
