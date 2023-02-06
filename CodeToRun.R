@@ -34,7 +34,7 @@ library(RPostgres)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
-db.name<-"CPRDGold"
+db.name<-"..."
 
 # Set output folder location -----
 # the path to a folder where the results from this analysis will be saved
@@ -49,17 +49,18 @@ output.folder4<-here("Results", db.name, "4_ScreeningTests")
 # Specify databaseConnector connection details -----
 # database connection details
 # connect to database
-user        <-  Sys.getenv("DB_USER")
-password    <-  Sys.getenv("DB_PASSWORD")
-port        <-  Sys.getenv("DB_PORT") 
-host        <-  Sys.getenv("DB_HOST") 
-server_dbi  <-  Sys.getenv("DB_SERVER_DBI_cdmgold202007")
+user<-"..."
+password<- "..."
+port<-"..."
+host<-"..."
+server_dbi<-"..."
 
 # Specify cdm_reference via DBI connection details -----
 # In this study we also use the DBI package to connect to the database
 # set up the dbConnect details below (see https://dbi.r-dbi.org/articles/dbi for more details)
 # you may need to install another package for this (although RPostgres is included with renv in case you are using postgres)
-db <- dbConnect(RPostgres::Postgres(),
+# see here for details: https://odyosg.github.io/CDMConnector/articles/DBI_connection_examples.html
+db <- dbConnect("...",
                 dbname = server_dbi,
                 port = port,
                 host = host, 
@@ -68,27 +69,21 @@ db <- dbConnect(RPostgres::Postgres(),
 
 # Set database details -----
 # The name of the schema that contains the OMOP CDM with patient-level data
-cdm_database_schema<-"public"
+cdm_database_schema<-"..."
 
 # The name of the schema that contains the vocabularies 
 # (often this will be the same as cdm_database_schema)
 vocabulary_database_schema<-cdm_database_schema
 
 # The name of the schema where results tables will be created 
-results_database_schema<-"results"
+results_database_schema<-"..."
 
-# Name of outcome and strata tables in the result table where the outcome and strata cohorts will be stored
+# Name of outcome and strata tables in the result table where the outcome cohorts will be stored
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
+outcome_table_stem<-"..."
 
-outcome_table_name_1 <- "cancercovidcancers" # this is the four cancers
-strata_table_name_1 <- "breast_prostate_strata" # this is the breast and prostate cohorts to be used as denominator strata
-outcome_table_name_2 <- "endocrine_tx_table" # this is the table for the endocrine treatments
-strata_table_name_2 <- "breast_prostate_endocrine_strata" # this is the table for the breast/prostate cancer diagnosis cohorts who are on endocrine treatments to be used as denominator strata
-outcome_table_name_3 <- "osteo_dx_table" # this is the table for the endocrine-treatment related outcomes of osteoporosis, osteopenia, bon fracture, bisphosphonates and denosumab
-outcome_table_name_4 <- "screening_outcomes_table" # this is the table for the screening tests as outcomes
-
-# create cdm reference ----
+# create cdm reference ---- 
 cdm <- CDMConnector::cdm_from_con(con = db, 
                                   cdm_schema = cdm_database_schema,
                                   write_schema = results_database_schema)

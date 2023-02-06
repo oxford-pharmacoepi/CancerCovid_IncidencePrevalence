@@ -16,7 +16,6 @@ info(logger, "- Getting denominator: general population")
 cdm$denominator <- generateDenominatorCohortSet(
   cdm = cdm,
   startDate = as.Date("2017-01-01"),
-  endDate = as.Date("2020-06-29"),
   ageGroup = list(c(0,150), c(0,19), c(20,39), c(40,59), c(60,79), c(80,150)),
   sex = c("Both", "Male", "Female"),
   daysPriorHistory = 365,
@@ -47,14 +46,14 @@ info(logger, "- Got denominator: general population")
 print(paste0("- Getting incidence: Screening tests"))
 info(logger, "- Getting incidence: Screening tests")
 
-# years
-inc_yrs <- estimateIncidence(
+
+inc <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_4, 
   outcomeCohortId = outcome_cohorts_4$cohortId,
   outcomeCohortName = outcome_cohorts_4$cohortName,
-  interval = "years",
+  interval = c("months", "years"),
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365),
   repeatedEvents = FALSE,
@@ -62,30 +61,12 @@ inc_yrs <- estimateIncidence(
   verbose = FALSE
 )
 
-inc_yrs %>%
+inc %>%
   glimpse()
 
 
-# months
-inc_months <- estimateIncidence(
-  cdm = cdm,
-  denominatorTable = "denominator",
-  outcomeTable = outcome_table_name_4, 
-  outcomeCohortId = outcome_cohorts_4$cohortId,
-  outcomeCohortName = outcome_cohorts_4$cohortName,
-  interval = "months",
-  completeDatabaseIntervals = FALSE,
-  outcomeWashout = c(0, NULL, 365),
-  repeatedEvents = FALSE,
-  minCellCount = 5,
-  verbose = FALSE
-)
 
-inc_months %>%
-  glimpse()
-
-
-save(inc_yrs, inc_months, file = here("Results", db.name, "4_ScreeningTests", "inc.RData"))
+save(inc, file = here("Results", db.name, "4_ScreeningTests", "inc.RData"))
 
 
 print(paste0("- Got incidence: Screening tests"))
@@ -98,7 +79,7 @@ print(paste0("- Gathering incidence and prevalence results: Screening tests"))
 info(logger, "- Gathering incidence and prevalence results: Screening tests")
 
 study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
-                                                  resultList=list(inc_yrs, inc_months),
+                                                  resultList=list(inc),
                                                   databaseName = db.name)
 
 
