@@ -25,7 +25,7 @@ cdm <- generateCohortSet(cdm = cdm,
                          overwrite = TRUE
 )
 
-cdm$cancercovidcancers %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[outcome_table_name_1]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got cancer outcomes")
 
@@ -43,7 +43,7 @@ cdm <- generateCohortSet(cdm = cdm,
                          cohortTableName = strata_table_name_1,
                          overwrite = TRUE) 
 
-cdm$breast_prostate_strata %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[strata_table_name_1]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got cancer strata")
 
@@ -61,7 +61,7 @@ cdm <- generateCohortSet(cdm = cdm,
                          cohortTableName = outcome_table_name_2,
                          overwrite = TRUE) 
 
-cdm$endocrine_tx_table %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[outcome_table_name_2]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got endocrine outcomes")
 
@@ -78,7 +78,7 @@ cdm <- generateCohortSet(cdm = cdm,
                          cohortTableName = strata_table_name_2,
                          overwrite = TRUE) 
 
-cdm$breast_prostate_endocrine_strata %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[strata_table_name_2]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- getting cancer and endocrine treatment strata")
 
@@ -95,7 +95,7 @@ cdm <- generateCohortSet(cdm = cdm,
                          cohortTableName = outcome_table_name_3,
                          overwrite = TRUE) 
 
-cdm$osteo_dx_table %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[outcome_table_name_3]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got endocrine treatment related outcomes")
 
@@ -120,6 +120,6 @@ cdm <- generateCohortSet(cdm = cdm,
                          overwrite = TRUE
 )
 
-cdm$screening_outcomes_table %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[outcome_table_name_4]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got screening test outcomes")
