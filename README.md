@@ -11,5 +11,5 @@ Open the project CancerCovid_IncidencePrevalence.Rproj in RStudio (when inside t
 
 Open and work though the CodeToRun.R file which should be the only file that you need to interact with. Run the lines in the file, adding your database specific information and so on (see comments within the file for instructions). The last line of this file will run the study (source(here("RunStudy.R")).
 
-After running you should then have a 4 separate results file, specific to each of the outcomes above, with a zipped folder within them with the results to share. Here you will also find the PDFs of all the plots, and the .RData objects for each part of the analyses.
+After running you should then have 4 separate results files, specific to each of the outcomes above, with a zipped folder within them with the results to share. Here you will also find the PDFs of all the plots, and the .RData objects for each part of the analyses.
 
