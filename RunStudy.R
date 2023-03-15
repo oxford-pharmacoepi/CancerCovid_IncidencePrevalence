@@ -16,12 +16,13 @@ if (!file.exists(output.folder4)){
 
 
 # table names----
-outcome_table_name_1 <- paste0(outcome_table_stem,"_cancercovidcancers") # this is the four cancers
+outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers") # this is the four cancers
+outcome_table_name_2 <- paste0(outcome_table_stem,"_1stevercancers") # this is the four cancers
 strata_table_name_1 <- paste0(outcome_table_stem,"_breast_prostate_strata") # this is the breast and prostate cohorts to be used as denominator strata
-outcome_table_name_2 <- paste0(outcome_table_stem,"_endocrine_tx_table") # this is the table for the endocrine treatments
+outcome_table_name_3 <- paste0(outcome_table_stem,"_endocrine_tx_table") # this is the table for the endocrine treatments
 strata_table_name_2 <- paste0(outcome_table_stem,"_breast_prostate_endocrine_strata") # this is the table for the breast/prostate cancer diagnosis cohorts who are on endocrine treatments to be used as denominator strata
-outcome_table_name_3 <- paste0(outcome_table_stem,"_osteo_dx_table") # this is the table for the endocrine-treatment related outcomes of osteoporosis, osteopenia, bon fracture, bisphosphonates and denosumab
-outcome_table_name_4 <- paste0(outcome_table_stem,"_screening_outcomes_table") # this is the table for the screening tests as outcomes
+outcome_table_name_4 <- paste0(outcome_table_stem,"_osteo_dx_table") # this is the table for the endocrine-treatment related outcomes of osteoporosis, osteopenia, bon fracture, bisphosphonates and denosumab
+outcome_table_name_5 <- paste0(outcome_table_stem,"_screening_outcomes_table") # this is the table for the screening tests as outcomes
 
 start<-Sys.time()
 
