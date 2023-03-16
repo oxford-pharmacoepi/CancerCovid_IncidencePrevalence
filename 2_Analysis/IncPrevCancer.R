@@ -58,6 +58,7 @@ point_prev <- estimatePointPrevalence(
   verbose = TRUE
 )
 
+
 point_prev %>%
   glimpse()
 
@@ -173,6 +174,7 @@ point_prev_qrs_plot <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_qrs_plot <- 
@@ -187,7 +189,7 @@ point_prev_qrs_plot <-
   ) +
   ggtitle("Point Prevalence of Cancer in Quarters Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
+   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))  +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 print(point_prev_qrs_plot)
@@ -196,14 +198,58 @@ print(point_prev_qrs_plot)
 analysis.name <- "cancers"
 plotname <- paste0(analysis.name, db.name, "_point_prev_qrs")
 
-pdf(here("Results", db.name , "1_Cancers", past0(plotname, ".pdf")),
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_qrs_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+
+
+# POINT PREVALENCE FOR CANCERS IN YEARS FOR ALL AGE AND SEX STRATA
+
+point_prev_yrs_plot <- study_results$prevalence_estimates %>% 
+  filter(denominator_cohort_id == 1) %>% 
+  filter(analysis_type == "point") %>% 
+  filter(analysis_interval == "years") %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
+  as.data.frame()
+
+point_prev_yrs_plot <- 
+  ggplot(point_prev_yrs_plot, aes(x = prevalence_start_date, y=prevalence,
+                                  ymin = prevalence_95CI_lower,
+                                  ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
+  geom_point() + geom_line() +
+  geom_errorbar(width=0) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, NA)
+  ) +
+  ggtitle("Point Prevalence of Cancer in Years Before and After COVID-19 Lockdown") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))  +
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
+
+print(point_prev_yrs_plot)
+
+# save the plot as pdf
+analysis.name <- "cancers"
+plotname <- paste0(analysis.name, db.name, "_point_prev_yrs")
+
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
+    width = 10, height = 8)
+print(point_prev_yrs_plot, newpage = FALSE)
+dev.off()
+
+
+# Save the plot as jpg
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -217,6 +263,7 @@ point_prev_months_plot <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_months_plot <- 
@@ -229,9 +276,10 @@ point_prev_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
-  ggtitle("Point Prevalence of Cancer in Months Before and After COVID-19 Lockdown") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+   ggtitle("Point Prevalence of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_months_plot
@@ -239,14 +287,14 @@ point_prev_months_plot
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_months")
 
-pdf(here("Results", db.name , "1_Cancers", past0(plotname, ".pdf")),
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_months_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -260,6 +308,7 @@ point_prev_1st_qrs_plot <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_1st_qrs_plot <- 
@@ -274,7 +323,7 @@ point_prev_1st_qrs_plot <-
   ) +
   ggtitle("Point Prevalence of 1st Ever Cancer (by type) in Quarters Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))  +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 print(point_prev_1st_qrs_plot)
@@ -283,14 +332,57 @@ print(point_prev_1st_qrs_plot)
 analysis.name <- "cancers"
 plotname <- paste0(analysis.name, db.name, "_point_prev_1st_qrs")
 
-pdf(here("Results", db.name , "1_Cancers", past0(plotname, ".pdf")),
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_1st_qrs_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_1st_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_1st_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+
+# POINT PREVALENCE FOR 1st EVER CANCERS (by type) IN YEARS FOR ALL AGE AND SEX STRATA
+
+point_prev_1st_yrs_plot <- study_results$prevalence_estimates %>% 
+  filter(denominator_cohort_id == 1) %>% 
+  filter(analysis_type == "point") %>% 
+  filter(analysis_interval == "years") %>%
+  mutate(outcome = case_when(outcome_cohort_name == "1stEverBreastCancer" ~ "Breast",
+                             outcome_cohort_name == "1stEverColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
+                             outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
+  as.data.frame()
+
+point_prev_1st_yrs_plot <- 
+  ggplot(point_prev_1st_yrs_plot, aes(x = prevalence_start_date, y=prevalence,
+                                      ymin = prevalence_95CI_lower,
+                                      ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
+  geom_point() + geom_line() +
+  geom_errorbar(width=0) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, NA)
+  ) +
+  ggtitle("Point Prevalence of 1st Ever Cancer (by type) in Years Before and After COVID-19 Lockdown") +
+  labs(colour = "Cancer", x="Time" , y="Prevalence") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1))  +
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
+
+print(point_prev_1st_yrs_plot)
+
+# save the plot as pdf
+analysis.name <- "cancers"
+plotname <- paste0(analysis.name, db.name, "_point_prev_1st_yrs")
+
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
+    width = 10, height = 8)
+print(point_prev_1st_yrs_plot, newpage = FALSE)
+dev.off()
+
+
+# Save the plot as jpg
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_1st_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -304,6 +396,7 @@ point_prev_1st_months_plot <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_1st_months_plot <- 
@@ -316,9 +409,10 @@ point_prev_1st_months_plot <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   ggtitle("Point Prevalence of 1st Ever Cancers (by type) in Quarters Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_1st_months_plot
@@ -326,14 +420,14 @@ point_prev_1st_months_plot
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_1st_months")
 
-pdf(here("Results", db.name , "1_Cancers", past0(plotname, ".pdf")),
+pdf(here("Results", db.name , "1_Cancers", paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_1st_months_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_1st_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_1st_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -348,6 +442,7 @@ inc_qrs_plot <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 inc_qrs_plot <- 
@@ -359,7 +454,7 @@ inc_qrs_plot <-
   scale_y_continuous(limits = c(0, 150)) +
   ggtitle("Incidence Rates of Cancer in Quarters Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_qrs_plot
@@ -367,16 +462,54 @@ inc_qrs_plot
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_inc_qrs")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(inc_qrs_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), inc_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
+# INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
+
+inc_yrs_plot <- study_results$incidence_estimates %>%  
+  filter(denominator_cohort_id == 1) %>%
+  filter(analysis_outcome_washout == 365) %>% 
+  filter(analysis_interval == "years") %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
+  as.data.frame()
+
+inc_yrs_plot <- 
+  ggplot(inc_yrs_plot, aes(x = incidence_start_date, y=incidence_100000_pys,
+                           ymin = incidence_100000_pys_95CI_lower,
+                           ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
+  geom_point() + geom_line() +
+  geom_errorbar(width=0) +
+  scale_y_continuous(limits = c(0, 150)) +
+  ggtitle("Incidence Rates of Cancer in Years Before and After COVID-19 Lockdown") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
+
+inc_yrs_plot
+
+# save the plot as pdf
+plotname <- paste0(analysis.name, db.name, "_inc_yrs")
+
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
+    width = 10, height = 8)
+print(inc_qrs_plot, newpage = FALSE)
+dev.off()
+
+
+# Save the plot as jpg
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
@@ -389,6 +522,7 @@ inc_months_plot <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 inc_months_plot <- 
@@ -398,9 +532,10 @@ inc_months_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_months_plot
@@ -408,14 +543,14 @@ inc_months_plot
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_inc_months")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(inc_months_plot, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -435,7 +570,7 @@ point_prev_qrs_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
-
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_qrs_plot_s <- 
@@ -451,7 +586,7 @@ point_prev_qrs_plot_s <-
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of Cancer in Quarters Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_qrs_plot_s
@@ -459,14 +594,14 @@ point_prev_qrs_plot_s
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_qrs_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_qrs_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -479,6 +614,7 @@ point_prev_months_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_months_plot_s <- 
@@ -491,10 +627,11 @@ point_prev_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_months_plot_s
@@ -502,14 +639,14 @@ point_prev_months_plot_s
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_months_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_months_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -521,7 +658,7 @@ point_prev_1st_qrs_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
-  
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_1st_qrs_plot_s <- 
@@ -537,7 +674,7 @@ point_prev_1st_qrs_plot_s <-
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of 1st Ever Cancers (by type) in Quarters Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_1st_qrs_plot_s
@@ -545,14 +682,14 @@ point_prev_1st_qrs_plot_s
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_1st_qrs_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_1st_qrs_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_1st_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_1st_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -565,6 +702,7 @@ point_prev_1st_months_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 point_prev_1st_months_plot_s <- 
@@ -577,10 +715,11 @@ point_prev_1st_months_plot_s <-
     labels = scales::percent,
     limits = c(0, NA)
   ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   facet_grid(~denominator_age_group ~denominator_sex) +
   ggtitle("Point Prevalence of 1st Ever Cancer (by type) in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 point_prev_1st_months_plot_s
@@ -588,14 +727,14 @@ point_prev_1st_months_plot_s
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_point_prev_1st_months_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(point_prev_1st_months_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), point_prev_1st_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_prev_1st_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -609,6 +748,7 @@ inc_qrs_plot_s <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 inc_qrs_plot_s <- 
@@ -621,22 +761,23 @@ inc_qrs_plot_s <-
   facet_grid(~denominator_age_group ~denominator_sex) +
     ggtitle("Incidence Rates of Cancer in Quarters before and after COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_qrs_plot_s
 
+analysis.name <- "cancers"
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_inc_qrs_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(inc_qrs_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), inc_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -650,6 +791,7 @@ inc_months_plot_s <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
   as.data.frame()
 
 inc_months_plot_s <- 
@@ -659,25 +801,27 @@ inc_months_plot_s <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 400)) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   facet_grid(~denominator_age_group ~denominator_sex) +
     ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_months_plot_s
 
+analysis.name <- "cancers"
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_inc_months_strat")
 
-pdf(here("Results", db.name,"1_Cancers",plotname),
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
     width = 10, height = 8)
 print(inc_months_plot_s, newpage = FALSE)
 dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", past0(plotname, ".jpg")), inc_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
