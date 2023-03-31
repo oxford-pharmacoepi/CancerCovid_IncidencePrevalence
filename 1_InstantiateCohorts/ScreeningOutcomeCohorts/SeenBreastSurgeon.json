@@ -2,31 +2,16 @@
   "ConceptSets": [
     {
       "id": 2,
-      "name": "[OPTIMA] Colonoscopy",
+      "name": "[OPTIMA] SeenBreastSurgeon",
       "expression": {
         "items": [
           {
             "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "73761001",
-              "CONCEPT_ID": 4249893,
-              "CONCEPT_NAME": "Colonoscopy",
-              "DOMAIN_ID": "Procedure",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            },
-            "includeDescendants": true
-          },
-          {
-            "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "444783004",
-              "CONCEPT_ID": 40480729,
-              "CONCEPT_NAME": "Screening colonoscopy",
-              "DOMAIN_ID": "Procedure",
+              "CONCEPT_CLASS_ID": "Clinical Finding",
+              "CONCEPT_CODE": "305703009",
+              "CONCEPT_ID": 4136626,
+              "CONCEPT_NAME": "Seen by breast surgeon",
+              "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
               "STANDARD_CONCEPT": "S",
@@ -42,7 +27,7 @@
   "PrimaryCriteria": {
     "CriteriaList": [
       {
-        "ProcedureOccurrence": {
+        "Observation": {
           "CodesetId": 2
         }
       }

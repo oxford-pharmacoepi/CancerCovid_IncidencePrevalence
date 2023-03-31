@@ -1,32 +1,17 @@
 {
   "ConceptSets": [
     {
-      "id": 2,
-      "name": "[OPTIMA] Colonoscopy",
+      "id": 0,
+      "name": "Referrals for lung cancer",
       "expression": {
         "items": [
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "73761001",
-              "CONCEPT_ID": 4249893,
-              "CONCEPT_NAME": "Colonoscopy",
-              "DOMAIN_ID": "Procedure",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            },
-            "includeDescendants": true
-          },
-          {
-            "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "444783004",
-              "CONCEPT_ID": 40480729,
-              "CONCEPT_NAME": "Screening colonoscopy",
-              "DOMAIN_ID": "Procedure",
+              "CONCEPT_CODE": "276491000000101",
+              "CONCEPT_ID": 44791283,
+              "CONCEPT_NAME": "Fast track referral for suspected lung cancer",
+              "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
               "STANDARD_CONCEPT": "S",
@@ -42,8 +27,8 @@
   "PrimaryCriteria": {
     "CriteriaList": [
       {
-        "ProcedureOccurrence": {
-          "CodesetId": 2
+        "Observation": {
+          "CodesetId": 0
         }
       }
     ],

@@ -1,39 +1,16 @@
 {
   "ConceptSets": [
     {
-      "id": 1,
-      "name": "Prostate Specific Antigen - Measurement",
+      "id": 0,
+      "name": "Referrals and visits for suspected breast cancer",
       "expression": {
         "items": [
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "63476009",
-              "CONCEPT_ID": 4272032,
-              "CONCEPT_NAME": "Prostate specific antigen measurement",
-              "DOMAIN_ID": "Measurement",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            },
-            "includeDescendants": true
-          }
-        ]
-      }
-    },
-    {
-      "id": 2,
-      "name": "Prostate Specific Antigen - Observation",
-      "expression": {
-        "items": [
-          {
-            "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "395155002",
-              "CONCEPT_ID": 4215705,
-              "CONCEPT_NAME": "Prostate-specific antigen monitoring",
+              "CONCEPT_CODE": "313186001",
+              "CONCEPT_ID": 4197459,
+              "CONCEPT_NAME": "Referral to breast clinic",
               "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -45,10 +22,40 @@
           },
           {
             "concept": {
-              "CONCEPT_CLASS_ID": "Observable Entity",
-              "CONCEPT_CODE": "1030791000000100",
-              "CONCEPT_ID": 37398806,
-              "CONCEPT_NAME": "Prostate specific antigen level",
+              "CONCEPT_CLASS_ID": "Procedure",
+              "CONCEPT_CODE": "183859008",
+              "CONCEPT_ID": 4086282,
+              "CONCEPT_NAME": "Referral to mammography clinic",
+              "DOMAIN_ID": "Observation",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Procedure",
+              "CONCEPT_CODE": "276341000000100",
+              "CONCEPT_ID": 44791272,
+              "CONCEPT_NAME": "Fast track referral for suspected breast cancer",
+              "DOMAIN_ID": "Observation",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Procedure",
+              "CONCEPT_CODE": "306300002",
+              "CONCEPT_ID": 4141840,
+              "CONCEPT_NAME": "Referral to breast surgeon",
               "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -65,13 +72,8 @@
   "PrimaryCriteria": {
     "CriteriaList": [
       {
-        "Measurement": {
-          "CodesetId": 1
-        }
-      },
-      {
         "Observation": {
-          "CodesetId": 2
+          "CodesetId": 0
         }
       }
     ],

@@ -1,17 +1,17 @@
 {
   "ConceptSets": [
     {
-      "id": 2,
-      "name": "[OPTIMA] Colonoscopy",
+      "id": 3,
+      "name": "[OPTIMA] Faecal Immunochemical test",
       "expression": {
         "items": [
           {
             "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "73761001",
-              "CONCEPT_ID": 4249893,
-              "CONCEPT_NAME": "Colonoscopy",
-              "DOMAIN_ID": "Procedure",
+              "CONCEPT_CLASS_ID": "Observable Entity",
+              "CONCEPT_CODE": "1049361000000101",
+              "CONCEPT_ID": 37395561,
+              "CONCEPT_NAME": "QFIT - Quantitative faecal immunochemical test",
+              "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
               "STANDARD_CONCEPT": "S",
@@ -22,16 +22,16 @@
           },
           {
             "concept": {
-              "CONCEPT_CLASS_ID": "Procedure",
-              "CONCEPT_CODE": "444783004",
-              "CONCEPT_ID": 40480729,
-              "CONCEPT_NAME": "Screening colonoscopy",
-              "DOMAIN_ID": "Procedure",
+              "CONCEPT_CLASS_ID": "Read",
+              "CONCEPT_CODE": "47K..00",
+              "CONCEPT_ID": 1397752,
+              "CONCEPT_NAME": "Quantitative faecal immunochemical test",
+              "DOMAIN_ID": "Observation",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
+              "STANDARD_CONCEPT": "N",
+              "STANDARD_CONCEPT_CAPTION": "Non-Standard",
+              "VOCABULARY_ID": "Read"
             },
             "includeDescendants": true
           }
@@ -43,7 +43,7 @@
     "CriteriaList": [
       {
         "ProcedureOccurrence": {
-          "CodesetId": 2
+          "CodesetId": 3
         }
       }
     ],

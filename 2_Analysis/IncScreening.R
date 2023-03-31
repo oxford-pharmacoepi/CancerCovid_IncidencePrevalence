@@ -2,7 +2,7 @@
 #                               Incidence for                                  #
 #                        Cancer related Screening Tests                        #
 #                              Nicola Barclay                                  #
-#                                31-01-2023                                    #
+#                                30-03-2023                                    #
 # ============================================================================ #
 
 print(paste0("- 4. Incidence of Screening tests"))
@@ -50,15 +50,15 @@ info(logger, "- Getting incidence: Screening tests")
 inc <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
-  outcomeTable = outcome_table_name_4, 
-  outcomeCohortId = outcome_cohorts_4$cohortId,
-  outcomeCohortName = outcome_cohorts_4$cohortName,
+  outcomeTable = outcome_table_name_5, 
+  outcomeCohortId = outcome_cohorts_5$cohortId,
+  outcomeCohortName = outcome_cohorts_5$cohortName,
   interval = c("months", "years"),
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365),
-  repeatedEvents = FALSE,
+  repeatedEvents = TRUE,
   minCellCount = 5,
-  verbose = FALSE
+  verbose = TRUE
 )
 
 inc %>%
@@ -73,10 +73,10 @@ print(paste0("- Got incidence: Screening tests"))
 info(logger, "- Got incidence: Screening tests")
 
 
-## ======== GATHER ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
+## ======== GATHER ALL INCIDENCE  RESULTS ===================== ##
 
-print(paste0("- Gathering incidence and prevalence results: Screening tests"))
-info(logger, "- Gathering incidence and prevalence results: Screening tests")
+print(paste0("- Gathering incidence  results: Screening tests"))
+info(logger, "- Gathering incidence  results: Screening tests")
 
 study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
                                                   resultList=list(inc),
@@ -86,24 +86,25 @@ study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
 # save study results as a separate R.data file
 save(study_results, file = here("Results", db.name, "4_ScreeningTests", "StudyResults_ScreeningTests.RData"))
 
-print(paste0("- Got incidence and prevalence results: Screening tests"))
-info(logger, "- Got incidence and prevalence results: Screening tests")
+print(paste0("- Got incidence  results: Screening tests"))
+info(logger, "- Got incidence  results: Screening tests")
 
 
-## ======== EXPORT ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
+## ======== EXPORT ALL INCIDENCE  RESULTS ===================== ##
 
-print(paste0("- Exporting incidence and prevalence results: Screening tests"))
-info(logger, "- Exporting incidence and Prevalence results: Screening tests")
+print(paste0("- Exporting incidence  results: Screening tests"))
+info(logger, "- Exporting incidence  results: Screening tests")
 
 exportIncidencePrevalenceResults(result=study_results, 
                                  zipName=paste0(db.name, "IncScreeningTestsResults"),
                                  outputFolder=here("Results", db.name, "4_ScreeningTests")) 
 
-print(paste0("- Exported incidence and prevalence results: Screening tests"))
-info(logger, "- Exported incidence and prevalence results: Screening tests")
+print(paste0("- Exported incidence  results: Screening tests"))
+info(logger, "- Exported incidence  results: Screening tests")
 
 
 ## ===================== PLOTS FOR DENOMINATOR POP == 1 ===================== ##
+# These all need updating
 
 
 print(paste0("- Plotting incidence Screening tests denominator 1"))
