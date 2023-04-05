@@ -410,7 +410,7 @@ point_prev_1st_months_plot <-
     limits = c(0, NA)
   ) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  ggtitle("Point Prevalence of 1st Ever Cancers (by type) in Quarters Before and After COVID-19 Lockdown") +
+  ggtitle("Point Prevalence of 1st Ever Cancers (by type) in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x="Time" , y="Prevalence") +
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
@@ -571,6 +571,7 @@ point_prev_qrs_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 point_prev_qrs_plot_s <- 
@@ -615,6 +616,7 @@ point_prev_months_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 point_prev_months_plot_s <- 
@@ -659,6 +661,7 @@ point_prev_1st_qrs_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 point_prev_1st_qrs_plot_s <- 
@@ -703,6 +706,7 @@ point_prev_1st_months_plot_s <- study_results$prevalence_estimates %>%
                              outcome_cohort_name == "1stEverLungCancer" ~ "Lung",
                              outcome_cohort_name == "1stEverProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 point_prev_1st_months_plot_s <- 
@@ -749,6 +753,7 @@ inc_qrs_plot_s <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 inc_qrs_plot_s <- 
@@ -757,7 +762,7 @@ inc_qrs_plot_s <-
                            ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, 400)) +
+  scale_y_continuous(limits = c(0, NA)) +
   facet_grid(~denominator_age_group ~denominator_sex) +
     ggtitle("Incidence Rates of Cancer in Quarters before and after COVID-19 Lockdown Stratified by Age and Sex") +
   labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
@@ -792,6 +797,7 @@ inc_months_plot_s <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
   as.data.frame()
 
 inc_months_plot_s <- 
@@ -800,7 +806,7 @@ inc_months_plot_s <-
                               ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, 400)) +
+  scale_y_continuous(limits = c(0, NA)) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   facet_grid(~denominator_age_group ~denominator_sex) +
     ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
