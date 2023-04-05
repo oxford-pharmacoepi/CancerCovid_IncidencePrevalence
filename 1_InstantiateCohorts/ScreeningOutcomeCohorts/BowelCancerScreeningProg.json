@@ -22,6 +22,52 @@
           }
         ]
       }
+    },
+    {
+      "id": 1,
+      "name": "Bowel cancer screening - observations",
+      "expression": {
+        "items": [
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Observable Entity",
+              "CONCEPT_CODE": "368481000000103",
+              "CONCEPT_ID": 44792842,
+              "CONCEPT_NAME": "Bowel cancer screening programme: faecal occult blood result",
+              "DOMAIN_ID": "Observation",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "name": "Bowel cancer screening - conditions",
+      "expression": {
+        "items": [
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Clinical Finding",
+              "CONCEPT_CODE": "375241000000109",
+              "CONCEPT_ID": 44812675,
+              "CONCEPT_NAME": "Bowel cancer screening programme faecal occult blood test abnormal",
+              "DOMAIN_ID": "Condition",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          }
+        ]
+      }
     }
   ],
   "PrimaryCriteria": {
@@ -29,6 +75,16 @@
       {
         "ProcedureOccurrence": {
           "CodesetId": 0
+        }
+      },
+      {
+        "Observation": {
+          "CodesetId": 1
+        }
+      },
+      {
+        "ConditionOccurrence": {
+          "CodesetId": 2
         }
       }
     ],
