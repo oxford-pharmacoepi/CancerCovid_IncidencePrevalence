@@ -51,8 +51,8 @@ inc_pre <- estimateIncidence(
   outcomeCohortName = outcome_cohorts_5$cohortName,
   interval = "overall",
   completeDatabaseIntervals = FALSE,
-  outcomeWashout = c(0, NULL, 365),
-  repeatedEvents = FALSE,
+  outcomeWashout = 30,
+  repeatedEvents = TRUE,
   minCellCount = 5,
   verbose = TRUE
 )
@@ -112,8 +112,8 @@ inc_lock <- estimateIncidence(
   outcomeCohortName = outcome_cohorts_5$cohortName,
   interval = "overall",
   completeDatabaseIntervals = FALSE,
-  outcomeWashout = c(0, NULL, 365),
-  repeatedEvents = FALSE,
+  outcomeWashout = 30,
+  repeatedEvents = TRUE,
   minCellCount = 5,
   verbose = TRUE
 )
@@ -174,8 +174,8 @@ inc_post <- estimateIncidence(
   outcomeCohortName = outcome_cohorts_5$cohortName,
   interval = "overall",
   completeDatabaseIntervals = FALSE,
-  outcomeWashout = c(0, NULL, 365),
-  repeatedEvents = FALSE,
+  outcomeWashout = 30,
+  repeatedEvents = TRUE,
   minCellCount = 5,
   verbose = TRUE
 )

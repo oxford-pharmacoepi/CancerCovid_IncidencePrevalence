@@ -1,7 +1,7 @@
 {
   "ConceptSets": [
     {
-      "id": 1,
+      "id": 0,
       "name": "[OPTIMA] Diagnostic procedures of chest",
       "expression": {
         "items": [
@@ -109,6 +109,21 @@
               "VOCABULARY_ID": "SNOMED"
             },
             "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Procedure",
+              "CONCEPT_CODE": "241620005",
+              "CONCEPT_ID": 4082987,
+              "CONCEPT_NAME": "Cardiac MRI",
+              "DOMAIN_ID": "Procedure",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "isExcluded": true
           }
         ]
       }
@@ -118,7 +133,7 @@
     "CriteriaList": [
       {
         "ProcedureOccurrence": {
-          "CodesetId": 1
+          "CodesetId": 0
         }
       }
     ],

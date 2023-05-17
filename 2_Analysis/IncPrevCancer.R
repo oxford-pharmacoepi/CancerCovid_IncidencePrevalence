@@ -787,6 +787,52 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs
 
 
 
+# INCIDENCE IN QUARTERS STRATIFIED BY AGE AND SEX - editing for paper
+
+inc_qrs_plot_s <- study_results$incidence_estimates %>%  
+  filter(analysis_outcome_washout == 365) %>% 
+  filter(analysis_interval == "quarters") %>%
+  mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
+                             outcome_cohort_name == "ColorectalCancer" ~ "Colorectal",
+                             outcome_cohort_name == "LungCancer" ~ "Lung",
+                             outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
+  filter(!is.na(outcome)) %>%
+  filter(!denominator_age_group %in% c("0;19")) %>%
+  as.data.frame()
+
+inc_qrs_plot_s <- 
+  ggplot(inc_qrs_plot_s, aes(x = incidence_start_date, y=incidence_100000_pys,
+                             ymin = incidence_100000_pys_95CI_lower,
+                             ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
+  geom_point() + geom_line() +
+  geom_errorbar(width=0) +
+  #scale_y_continuous(limits = c(0, NA)) +
+  facet_wrap(~denominator_age_group ~denominator_sex, nrow=5, scales = "free_y") +
+  ggtitle("Incidence Rates of Cancer in Quarters before and after COVID-19 Lockdown Stratified by Age and Sex") +
+  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
+
+inc_qrs_plot_s
+
+
+analysis.name <- "cancers"
+# save the plot as pdf
+plotname <- paste0(analysis.name, db.name, "_inc_qrs_strat")
+
+pdf(here("Results", db.name,"1_Cancers",paste0(plotname, ".pdf")),
+    width = 10, height = 8)
+print(inc_qrs_plot_s, newpage = FALSE)
+dev.off()
+
+
+# Save the plot as jpg
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs_plot_s, dpi=600, scale = 1, width = 12, height = 9)
+
+
+
+
+
 # INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
 
 inc_months_plot_s <- study_results$incidence_estimates %>%  

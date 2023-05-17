@@ -13,29 +13,21 @@ info(logger, "- 4. Incidence of Screening tests")
 print(paste0("- Getting denominator: general population"))
 info(logger, "- Getting denominator: general population")
 
-cdm$denominator <- generateDenominatorCohortSet(
-  cdm = cdm,
-  startDate = as.Date("2017-01-01"),
+cdm <- generateDenominatorCohortSet(
+  cdm = cdm, name = "denominator",
+  cohortDateRange = as.Date(c("2017-01-01","2022-01-01")),
   ageGroup = list(c(0,150), c(0,19), c(20,39), c(40,59), c(60,79), c(80,150)),
   sex = c("Both", "Male", "Female"),
   daysPriorHistory = 365,
-  verbose = TRUE
+  temporary = TRUE
 )
 
 cdm$denominator %>% glimpse()
 
-cdm$denominator %>% tally()  # to check numbers in denominator population
+cdm$denominator %>% head()
 
-dpop <- cdm$denominator %>%
-  collect() %>%
-  left_join(settings(cdm$denominator))
-
-dpop %>%
-  group_by(cohort_definition_id, age_group, sex) %>%
-  tally()
-
-# View attrition table
-attrition(cdm$denominator)
+cohortSet(cdm$denominator)
+cohortCount(cdm$denominator)
 
 print(paste0("- Got denominator: general population"))
 info(logger, "- Got denominator: general population")
@@ -51,60 +43,39 @@ inc_screen <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_5, 
-  outcomeCohortId = outcome_cohorts_5$cohortId,
-  outcomeCohortName = outcome_cohorts_5$cohortName,
+  #outcomeCohortId = outcome_cohorts_5$cohort_definition_id,
   interval = c("months", "years"),
   completeDatabaseIntervals = FALSE,
   outcomeWashout = 30,
   repeatedEvents = TRUE,
   minCellCount = 5,
-  verbose = TRUE
-)
+  temporary=TRUE,
+  )
+
 
 inc_screen %>%
   glimpse()
 
 
 
-save(inc_screen, file = here("Results", db.name, "4_ScreeningTests", "inc_screen.RData"))
+save(inc_screen, file = here("Results", db.name, "4_UPDATED_ScreeningTests", "inc_screen.RData"))
 
-
+  
 print(paste0("- Got incidence: Screening tests"))
 info(logger, "- Got incidence: Screening tests")
 
 
-## ======== GATHER ALL INCIDENCE  RESULTS ===================== ##
 
-print(paste0("- Gathering incidence  results: Screening tests"))
-info(logger, "- Gathering incidence  results: Screening tests")
+# UPDATED CODE FOR EXPORT ######
+exportIncidencePrevalenceResults(resultList = list("incidence" = inc_screen 
+                                                  ),
+                                 zipName = "IncScreeningTestsResults_updated",
+                                 outputFolder = here::here("Results", db.name, "4_UPDATED_ScreeningTests"))
 
-study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
-                                                  resultList=list(inc_screen),
-                                                  databaseName = db.name)
-
-
-# save study results as a separate R.data file
-save(study_results, file = here("Results", db.name, "4_ScreeningTests", "StudyResults_ScreeningTests.RData"))
-
-print(paste0("- Got incidence  results: Screening tests"))
-info(logger, "- Got incidence  results: Screening tests")
-
-
-## ======== EXPORT ALL INCIDENCE  RESULTS ===================== ##
-
-print(paste0("- Exporting incidence  results: Screening tests"))
-info(logger, "- Exporting incidence  results: Screening tests")
-
-exportIncidencePrevalenceResults(result=study_results, 
-                                 zipName=paste0(db.name, "IncScreeningTestsResults"),
-                                 outputFolder=here("Results", db.name, "4_ScreeningTests")) 
-
-print(paste0("- Exported incidence  results: Screening tests"))
-info(logger, "- Exported incidence  results: Screening tests")
 
 
 ## ===================== PLOTS FOR DENOMINATOR POP == 1 ===================== ##
-# These all need updating
+
 
 
 print(paste0("- Plotting incidence Screening tests denominator 1"))
@@ -115,7 +86,7 @@ info(logger, "- Plotting incidence Screening tests denominator 1")
 
 # BREAST CANCER SCREENING AND DIAGNOSTIC TESTS IN YEARS
 
-breast_inc_yrs_plot <- study_results$incidence_estimates %>%  
+breast_inc_yrs_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "years") %>%
   filter(outcome_cohort_name %in% c("BiopsyOfBreast", "BreastCancerReferrals","ExcisionOfBreast","Mammograms","SeenBreastClinic","SeenBreastSurgeon")) %>%
@@ -151,12 +122,12 @@ print(breast_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # BREAST CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
 
-breast_inc_months_plot <- study_results$incidence_estimates %>%  
+breast_inc_months_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "months") %>%
   filter(outcome_cohort_name %in% c("BiopsyOfBreast", "BreastCancerReferrals","ExcisionOfBreast","Mammograms","SeenBreastClinic","SeenBreastSurgeon")) %>%
@@ -192,20 +163,21 @@ print(breast_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
 # COLORECTAL CANCER SCREENING AND DIAGNOSTIC TESTS IN YEARS
 
-colorectal_inc_yrs_plot <- study_results$incidence_estimates %>%  
+colorectal_inc_yrs_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "years") %>%
-  filter(outcome_cohort_name %in% c("BowelCancerScreeningProg", "Colonoscopy","QuantitativeFaecalImmunochemicalTests","Sigmoidoscopy")) %>%
+  filter(outcome_cohort_name %in% c("BowelCancerScreeningProg", "Colonoscopy","QuantitativeFaecalImmunochemicalTests","ColorectalCancerReferrals", "Sigmoidoscopy")) %>%
   mutate(outcome = case_when(outcome_cohort_name == "BowelCancerScreeningProg" ~ "Bowel Cancer Screening Prog",
                              outcome_cohort_name == "Colonoscopy" ~ "Colonoscopy",
                              outcome_cohort_name == "QuantitativeFaecalImmunochemicalTests" ~ "Quantitative Faecal Immunochemical Tests",
+                             outcome_cohort_name == "ColorectalCancerReferrals" ~ "Colorectal Cancer Referrals",
                              outcome_cohort_name == "Sigmoidoscopy" ~ "Sigmoidoscopy")) %>% 
   as.data.frame()
 
@@ -233,25 +205,26 @@ print(colorectal_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # COLORECTAL CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
 
-colorectal_inc_months_plot <- study_results$incidence_estimates %>%  
+colorectal_inc_months_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "months") %>%
-  filter(outcome_cohort_name %in% c("BowelCancerScreeningProg", "Colonoscopy","QuantitativeFaecalImmunochemicalTests","Sigmoidoscopy")) %>%
+  filter(outcome_cohort_name %in% c("BowelCancerScreeningProg", "Colonoscopy","QuantitativeFaecalImmunochemicalTests","ColorectalCancerReferrals", "Sigmoidoscopy")) %>%
   mutate(outcome = case_when(outcome_cohort_name == "BowelCancerScreeningProg" ~ "Bowel Cancer Screening Prog",
                              outcome_cohort_name == "Colonoscopy" ~ "Colonoscopy",
                              outcome_cohort_name == "QuantitativeFaecalImmunochemicalTests" ~ "Quantitative Faecal Immunochemical Tests",
+                             outcome_cohort_name == "ColorectalCancerReferrals" ~ "Colorectal Cancer Referrals",
                              outcome_cohort_name == "Sigmoidoscopy" ~ "Sigmoidoscopy")) %>% 
   as.data.frame()
 
 colorectal_inc_months_plot <- 
   ggplot(colorectal_inc_months_plot, aes(x = incidence_start_date, y=incidence_100000_pys,
-                                     ymin = incidence_100000_pys_95CI_lower,
-                                     ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
+                                      ymin = incidence_100000_pys_95CI_lower,
+                                      ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, NA)) +
@@ -272,7 +245,7 @@ print(colorectal_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -281,7 +254,7 @@ ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), 
 
 # LUNG CANCER SCREENING AND DIAGNOSTIC TESTS IN YEARS
 
-lung_inc_yrs_plot <- study_results$incidence_estimates %>%  
+lung_inc_yrs_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "years") %>%
   filter(outcome_cohort_name %in% c("Bronchoscopy", "DiagnosticProceduresOfChest","LungCancerReferrals")) %>%
@@ -314,12 +287,12 @@ print(lung_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # LUNG CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
 
-lung_inc_months_plot <- study_results$incidence_estimates %>%  
+lung_inc_months_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "months") %>%
   filter(outcome_cohort_name %in% c("Bronchoscopy", "DiagnosticProceduresOfChest","LungCancerReferrals")) %>%
@@ -352,7 +325,7 @@ print(lung_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 
@@ -360,7 +333,7 @@ ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), 
 
 # PROSTATE CANCER SCREENING AND DIAGNOSTIC TESTS IN YEARS
 
-prostate_inc_yrs_plot <- study_results$incidence_estimates %>%  
+prostate_inc_yrs_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "years") %>%
   filter(outcome_cohort_name %in% c("BiopsyOfProstate", "ProstateSpecificAntigenTest")) %>%
@@ -392,12 +365,12 @@ print(lung_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_yrs_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 # PROSTATE CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
 
-prostate_inc_months_plot <- study_results$incidence_estimates %>%  
+prostate_inc_months_plot <- inc_screen %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_interval == "months") %>%
   filter(outcome_cohort_name %in% c("BiopsyOfProstate", "ProstateSpecificAntigenTest")) %>%
@@ -429,7 +402,7 @@ print(prostate_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
 
 
 print(paste0("- Analysis of screening tests done"))

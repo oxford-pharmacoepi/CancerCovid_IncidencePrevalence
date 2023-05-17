@@ -15,8 +15,16 @@ info(logger, "- 1. Incidence and Prevalence of Cancers")
 ## ======= Compute the denominator population pre-COVID  ==================== ##
 
 # add selects etc then loop over all the locations
+allRegions <- cdm$location %>% pull(location_source_value)
 cdm$observation_period_original <- cdm$observation_period
-cdm$observation_period <- cdm$observation_period_original %>% left_join(cdm$person) %>% left_join(cdm$care_site) %>% left_join(cdm$location) %>% filter()
+cdm$observation_period <- cdm$observation_period_original %>% 
+  left_join(cdm$person %>% select(person_id, care_site_id), by = "person_id") %>% 
+  left_join(cdm$care_site %>% select(care_site_id, location_id), by = "care_site_id") %>%
+  left_join(cdm$location %>% select(location_id, region = location_source_value), by = "location_id") %>%
+  select(-c(care_site_id, location_id)) %>%
+  filter(region == !!allRegions[1]) %>%
+  select(-"region") %>%
+  compute()
 
 print(paste0("- Getting denominator: general population"))
 info(logger, "- Getting denominator: general population")

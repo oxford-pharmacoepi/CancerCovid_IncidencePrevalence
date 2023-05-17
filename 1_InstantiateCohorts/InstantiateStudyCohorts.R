@@ -21,7 +21,7 @@ outcome_cohorts_1 <- readCohortSet(here::here("1_InstantiateCohorts","CancerOutc
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_1,
-                         cohortTableName = outcome_table_name_1,
+                         name = outcome_table_name_1,
                          overwrite = TRUE
 )
 
@@ -46,7 +46,7 @@ outcome_cohorts_2 <- readCohortSet(here::here("1_InstantiateCohorts","1stEverCan
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_2,
-                         cohortTableName = outcome_table_name_2,
+                         name = outcome_table_name_2,
                          overwrite = TRUE
 )
 
@@ -64,7 +64,7 @@ strata_cohorts_1 <- readCohortSet(here("1_InstantiateCohorts", "CancerStrataCoho
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = strata_cohorts_1,
-                         cohortTableName = strata_table_name_1,
+                         name = strata_table_name_1,
                          overwrite = TRUE) 
 
 cdm[[strata_table_name_1]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
@@ -82,7 +82,7 @@ outcome_cohorts_3 <- readCohortSet(here("1_InstantiateCohorts", "EndocrineTxOutc
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_3,
-                         cohortTableName = outcome_table_name_3,
+                         name = outcome_table_name_3,
                          overwrite = TRUE) 
 
 cdm[[outcome_table_name_3]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
@@ -99,7 +99,7 @@ strata_cohorts_2 <- readCohortSet(here("1_InstantiateCohorts", "CancerTXStrataCo
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = strata_cohorts_2,
-                         cohortTableName = strata_table_name_2,
+                         name = strata_table_name_2,
                          overwrite = TRUE) 
 
 cdm[[strata_table_name_2]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
@@ -116,7 +116,7 @@ outcome_cohorts_4 <- readCohortSet(here("1_InstantiateCohorts", "OsteoDxOutcomeC
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_4,
-                         cohortTableName = outcome_table_name_4,
+                         name = outcome_table_name_4,
                          overwrite = TRUE) 
 
 cdm[[outcome_table_name_4]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
@@ -133,14 +133,16 @@ info(logger, "- got endocrine treatment related outcomes")
 # instantiate cancer outcome cohorts
 info(logger, "- getting screening test outcomes")
 
+
 outcome_cohorts_5 <- readCohortSet(here::here("1_InstantiateCohorts","ScreeningOutcomeCohorts"))
+
 
 
 
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_5,
-                         cohortTableName = outcome_table_name_5,
+                         name = outcome_table_name_5,
                          overwrite = TRUE
 )
 
