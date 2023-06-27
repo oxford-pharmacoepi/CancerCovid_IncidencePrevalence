@@ -452,13 +452,15 @@ inc_qrs_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
+  scale_x_date(date_labels="%b %Y",date_breaks  ="3 month")+
   ggtitle("Incidence Rates of Cancer in Quarters Before and After COVID-19 Lockdown") +
-  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
+  labs(colour = "Cancer", x=" " , y="Incidence per 100,000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
 inc_qrs_plot
 
+analysis.name <- "cancers"
 # save the plot as pdf
 plotname <- paste0(analysis.name, db.name, "_inc_qrs")
 
@@ -469,7 +471,7 @@ dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
@@ -532,9 +534,9 @@ inc_months_plot <-
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
   scale_y_continuous(limits = c(0, 150)) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_x_date(date_labels="%b %Y",date_breaks  ="3 month")+
   ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown") +
-  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
+  labs(colour = "Cancer", x=" " , y="Incidence per 100,000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
@@ -550,7 +552,7 @@ dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot, dpi=900, scale = 1, width = 12, height = 9)
 
 
 
@@ -576,7 +578,7 @@ point_prev_qrs_plot_s <- study_results$prevalence_estimates %>%
 
 point_prev_qrs_plot_s <- 
   ggplot(point_prev_qrs_plot_s, aes(x = prevalence_start_date, y=prevalence,
-                                    ymin = prevalence_95CI_lower,
+                                    ymin = prevalence_9F5CI_lower,
                                     ymax = prevalence_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
