@@ -2,7 +2,7 @@
 #                               Incidence for                                  #
 #                        Cancer related Screening Tests                        #
 #                              Nicola Barclay                                  #
-#                                30-03-2023                                    #
+#                                29-06-2023                                    #
 # ============================================================================ #
 
 print(paste0("- 4. Incidence of Screening tests"))
@@ -42,8 +42,8 @@ info(logger, "- Getting incidence: Screening tests")
 inc_screen <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
-  outcomeTable = outcome_table_name_5, 
-  #outcomeCohortId = outcome_cohorts_5$cohort_definition_id,
+  outcomeTable = outcome_table_name_3, 
+  outcomeCohortId = NULL,
   interval = c("months", "years"),
   completeDatabaseIntervals = FALSE,
   outcomeWashout = 30,
@@ -58,7 +58,7 @@ inc_screen %>%
 
 
 
-save(inc_screen, file = here("Results", db.name, "4_UPDATED_ScreeningTests", "inc_screen.RData"))
+save(inc_screen, file = here("Results", db.name, "2_ScreeningTests", "inc_screen.RData"))
 
   
 print(paste0("- Got incidence: Screening tests"))
@@ -67,10 +67,9 @@ info(logger, "- Got incidence: Screening tests")
 
 
 # UPDATED CODE FOR EXPORT ######
-exportIncidencePrevalenceResults(resultList = list("incidence" = inc_screen 
-                                                  ),
+exportIncidencePrevalenceResults(resultList = list("incidence" = inc_screen),
                                  zipName = "IncScreeningTestsResults_updated",
-                                 outputFolder = here::here("Results", db.name, "4_UPDATED_ScreeningTests"))
+                                 outputFolder = here::here("Results", db.name, "2_ScreeningTests"))
 
 
 
@@ -122,7 +121,7 @@ print(breast_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # BREAST CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
@@ -163,7 +162,7 @@ print(breast_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
@@ -205,7 +204,7 @@ print(colorectal_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # COLORECTAL CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
@@ -245,7 +244,7 @@ print(colorectal_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 
@@ -287,7 +286,7 @@ print(lung_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # LUNG CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
@@ -325,7 +324,7 @@ print(lung_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 
@@ -365,7 +364,7 @@ print(lung_inc_yrs_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_yrs_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 # PROSTATE CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
@@ -402,7 +401,7 @@ print(prostate_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=600, scale = 1, width = 12, height = 9)
 
 
 ## ===================== PLOTS FACETED BY OUTCOME =========================== ##
@@ -447,7 +446,7 @@ print(breast_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), breast_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
 
 
 
@@ -491,7 +490,7 @@ print(colorectal_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), colorectal_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
 
 
 
@@ -532,7 +531,7 @@ print(lung_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), lung_inc_months_plot, dpi=900, scale = 1, width = 16, height = 9)
 
 
 # PROSTATE CANCER SCREENING AND DIAGNOSTIC TESTS IN MONTHS
@@ -571,7 +570,7 @@ print(prostate_inc_months_plot, newpage = FALSE)
 dev.off()
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "4_UPDATED_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=900, scale = 1, width = 18, height = 9)
+ggsave(here("Results", db.name , "2_ScreeningTests", paste0(plotname, ".jpg")), prostate_inc_months_plot, dpi=900, scale = 1, width = 18, height = 9)
 
 
 

@@ -6,3 +6,7 @@ Results*
 CodeToRun-local.R
 IncPrevEndocrineTx-old.R
 Extras*
+.Rprofile
+logfile.log
+Old_results*
+.csv

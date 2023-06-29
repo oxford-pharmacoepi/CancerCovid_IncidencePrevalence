@@ -9,7 +9,9 @@
 #                                                                              #
 # ============================================================================ #
 
-
+# Load packages ------
+#renv::activate()
+#renv::restore()
 
 # Load packages ------
 
@@ -42,9 +44,8 @@ db.name<-"..."
 # but this file path could be set to somewhere else
 output.folder<-here("Results", db.name)
 output.folder1<-here("Results", db.name, "1_Cancers")
-output.folder2<-here("Results", db.name, "2_EndocrineTx")
-output.folder3<-here("Results", db.name, "3_OsteoDx")
-output.folder4<-here("Results", db.name, "4_ScreeningTests")
+output.folder2<-here("Results", db.name, "2_ScreeningTests")
+
 
 # Specify databaseConnector connection details -----
 # database connection details
@@ -81,7 +82,15 @@ results_database_schema<-"..."
 # Name of outcome and strata tables in the result table where the outcome cohorts will be stored
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
-outcome_table_stem<-"..."
+
+outcome_table_stem <- "..."
+
+
+# table names----
+outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers") # this is the four cancers
+outcome_table_name_2 <- paste0(outcome_table_stem,"_1stevercancers") # this is the four cancers
+outcome_table_name_3 <- paste0(outcome_table_stem,"_screening_outcomes_table") # this is the table for the screening tests as outcomes
+
 
 # create cdm reference ---- 
 cdm <- CDMConnector::cdm_from_con(con = db, 
@@ -96,4 +105,4 @@ cdm$person %>%
 
 # Run the study ------
 source(here("RunStudy.R"))
-# after the study is run you should have a zip folder in your output folder to share
+# after the study is run you should have a zip folder in your home directory to share

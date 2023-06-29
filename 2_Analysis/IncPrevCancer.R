@@ -2,40 +2,33 @@
 #                         Incidence/Prevalence for                             #
 #                 Breast, Colorectal, Lung and Prostate Cancer                 #
 #                              Nicola Barclay                                  #
-#                                18-01-2023                                    #
+#                                29-06-2023                                    #
 # ============================================================================ #
 
 print(paste0("- 1. Incidence and Prevalence of Cancers"))
 info(logger, "- 1. Incidence and Prevalence of Cancers")
 
-## ======= Compute the denominator population (\~7 minutes in CPRD GOLD) ==== ##
+## ======= Compute the denominator population  ==== ##
 
 print(paste0("- Getting denominator: general population"))
 info(logger, "- Getting denominator: general population")
 
-cdm$denominator <- generateDenominatorCohortSet(
+cdm <- generateDenominatorCohortSet(
   cdm = cdm,
-  startDate = as.Date("2017-01-01"),
+  name = "denominator",
+  cohortDateRange = as.Date(c("2017-01-01","2022-01-01")),
   ageGroup = list(c(0,150), c(0,19), c(20,39), c(40,59), c(60,79), c(80,150)),
   sex = c("Both", "Male", "Female"),
   daysPriorHistory = 365,
-  verbose = TRUE
+  temporary = TRUE
 )
 
-cdm$denominator %>% glimpse()
+count <-cohortCount(cdm$denominator)  
 
-cdm$denominator %>% tally()  # to check numbers in denominator population
+count2 <- cohortSet(cdm$denominator) 
 
-dpop <- cdm$denominator %>%
-  collect() %>%
-  left_join(settings(cdm$denominator))
+Denominator_counts <- count %>% left_join(count2)
 
-dpop %>%
-  group_by(cohort_definition_id, age_group, sex) %>%
-  tally()
-
-# View attrition table
-attrition(cdm$denominator)
 
 print(paste0("- Got denominator: general population"))
 info(logger, "- Got denominator: general population")
@@ -49,13 +42,12 @@ point_prev <- estimatePointPrevalence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_1, 
-  outcomeCohortId = outcome_cohorts_1$cohortId,
-  outcomeCohortName = outcome_cohorts_1$cohortName,
+  outcomeCohortId = NULL,
   outcomeLookbackDays = 365,
   interval = c("months", "quarters", "years"),
   timePoint = "start",
   minCellCount = 5,
-  verbose = TRUE
+  temporary = TRUE
 )
 
 
@@ -78,13 +70,12 @@ point_prev_1st_ever <- estimatePointPrevalence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_2, 
-  outcomeCohortId = outcome_cohorts_2$cohortId,
-  outcomeCohortName = outcome_cohorts_2$cohortName,
+  outcomeCohortId = NULL,
   outcomeLookbackDays = 365,
   interval = c("months", "quarters", "years"),
   timePoint = "start",
   minCellCount = 5,
-  verbose = TRUE
+  temporary = TRUE
 )
 
 point_prev_1st_ever %>%
@@ -107,14 +98,13 @@ inc <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = outcome_table_name_1, 
-  outcomeCohortId = outcome_cohorts_1$cohortId,
-  outcomeCohortName = outcome_cohorts_1$cohortName,
+  outcomeCohortId = NULL,
   interval = c("months", "quarters", "years"),
   completeDatabaseIntervals = FALSE,
   outcomeWashout = c(0, NULL, 365),
   repeatedEvents = FALSE,
   minCellCount = 5,
-  verbose = TRUE
+  temporary = TRUE
 )
 
 inc %>%
@@ -128,29 +118,14 @@ print(paste0("- Got incidence: cancer populations"))
 info(logger, "- Got incidence: cancer populations")
 
 
-## ======== GATHER ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
-
-print(paste0("- Gathering incidence and prevalence results: cancer populations"))
-info(logger, "- Gathering incidence and prevalence results: cancer populations")
-
-study_results <- gatherIncidencePrevalenceResults(cdm=cdm,
-                                                  resultList=list(point_prev, point_prev_1st_ever, inc),
-                                                  databaseName = db.name)
-
-
-# save study results as a separate R.data file
-save(study_results, file = here("Results", db.name, "1_Cancers", "StudyResults_cancers.RData"))
-
-print(paste0("- Got incidence and prevalence results: cancer populations"))
-info(logger, "- Got incidence and prevalence results: cancer populations")
-
 
 ## ======== EXPORT ALL INCIDENCE AND PREVALENCE RESULTS ===================== ##
 
 print(paste0("- Exporting incidence and prevalence results: cancer populations"))
 info(logger, "- Exporting incidence and Prevalence results: cancer populations")
 
-exportIncidencePrevalenceResults(result=study_results, 
+
+exportIncidencePrevalenceResults(resultList=list("inc" = inc, "point_prev" = point_prev, "point_prev_1st_ever" = point_prev_1st_ever), 
                                  zipName=paste0(db.name, "IncPrevCancerResults"),
                                  outputFolder=here("Results", db.name, "1_Cancers")) 
 
@@ -166,7 +141,7 @@ info(logger, "- Plotting incidence and prevalence results: cancer populations de
 
 # POINT PREVALENCE FOR CANCERS IN QUARTERS FOR ALL AGE AND SEX STRATA
 
-point_prev_qrs_plot <- study_results$prevalence_estimates %>% 
+point_prev_qrs_plot <- point_prev %>% 
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "quarters") %>%
@@ -210,7 +185,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE FOR CANCERS IN YEARS FOR ALL AGE AND SEX STRATA
 
-point_prev_yrs_plot <- study_results$prevalence_estimates %>% 
+point_prev_yrs_plot <- point_prev %>% 
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
@@ -255,7 +230,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE IN MONTHS FOR ALL AGE AND SEX STRATA
 
-point_prev_months_plot <- study_results$prevalence_estimates %>%
+point_prev_months_plot <- point_prev %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
@@ -300,7 +275,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE FOR 1st EVER CANCERS (by type) IN QUARTERS FOR ALL AGE AND SEX STRATA
 
-point_prev_1st_qrs_plot <- study_results$prevalence_estimates %>% 
+point_prev_1st_qrs_plot <- point_prev %>% 
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "quarters") %>%
@@ -343,7 +318,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE FOR 1st EVER CANCERS (by type) IN YEARS FOR ALL AGE AND SEX STRATA
 
-point_prev_1st_yrs_plot <- study_results$prevalence_estimates %>% 
+point_prev_1st_yrs_plot <- point_prev_1st_ever %>% 
   filter(denominator_cohort_id == 1) %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "years") %>%
@@ -388,7 +363,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE 1st EVER CANCERS (by type) IN MONTHS FOR ALL AGE AND SEX STRATA
 
-point_prev_1st_months_plot <- study_results$prevalence_estimates %>%
+point_prev_1st_months_plot <- point_prev_1st_ever %>%
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
@@ -434,7 +409,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # INCIDENCE IN QUARTERS FOR ALL AGE AND SEX STRATA
 
-inc_qrs_plot <- study_results$incidence_estimates %>%  
+inc_qrs_plot <- inc %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "quarters") %>%
@@ -476,7 +451,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs
 
 # INCIDENCE IN YEARS FOR ALL AGE AND SEX STRATA
 
-inc_yrs_plot <- study_results$incidence_estimates %>%  
+inc_yrs_plot <- inc %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "years") %>%
@@ -516,7 +491,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_yrs
 
 # INCIDENCE IN MONTHS FOR ALL AGE AND SEX STRATA 
 
-inc_months_plot <- study_results$incidence_estimates %>%  
+inc_months_plot <- inc %>%  
   filter(denominator_cohort_id == 1) %>%
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "months") %>%
@@ -533,7 +508,7 @@ inc_months_plot <-
                            ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, 150)) +
+  scale_y_continuous(limits = c(0, NA)) +
   scale_x_date(date_labels="%b %Y",date_breaks  ="3 month")+
   ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown") +
   labs(colour = "Cancer", x=" " , y="Incidence per 100,000 person-years") +
@@ -565,7 +540,7 @@ print(paste0("- Plotting incidence and prevalence results: cancer populations st
 info(logger, "- Plotting incidence and prevalence results: cancer populations stratified by age and sex")
 
 # POINT PREVALENCE IN QUARTERS STRATIFIED BY AGE AND SEX
-point_prev_qrs_plot_s <- study_results$prevalence_estimates %>% 
+point_prev_qrs_plot_s <- point_prev %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "quarters") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -610,7 +585,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE IN MONTHS STRATIFIED BY AGE AND SEX
 
-point_prev_months_plot_s <- study_results$prevalence_estimates %>%  
+point_prev_months_plot_s <- point_prev %>%  
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -655,7 +630,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 
 # POINT PREVALENCE of 1st EVER CANCERS IN QUARTERS STRATIFIED BY AGE AND SEX
-point_prev_1st_qrs_plot_s <- study_results$prevalence_estimates %>% 
+point_prev_1st_qrs_plot_s <- point_prev_1st_ever %>% 
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "quarters") %>%
   mutate(outcome = case_when(outcome_cohort_name == "1stEverBreastCancer" ~ "Breast",
@@ -700,7 +675,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # POINT PREVALENCE of 1st EVER CANCERS IN MONTHS STRATIFIED BY AGE AND SEX
 
-point_prev_1st_months_plot_s <- study_results$prevalence_estimates %>%  
+point_prev_1st_months_plot_s <- point_prev_1st_ever %>%  
   filter(analysis_type == "point") %>% 
   filter(analysis_interval == "months") %>%
   mutate(outcome = case_when(outcome_cohort_name == "1stEverBreastCancer" ~ "Breast",
@@ -747,7 +722,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), point_p
 
 # INCIDENCE IN QUARTERS STRATIFIED BY AGE AND SEX
 
-inc_qrs_plot_s <- study_results$incidence_estimates %>%  
+inc_qrs_plot_s <- inc %>%  
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "quarters") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -791,7 +766,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs
 
 # INCIDENCE IN QUARTERS STRATIFIED BY AGE AND SEX - editing for paper
 
-inc_qrs_plot_s <- study_results$incidence_estimates %>%  
+inc_qrs_plot_s <- inc %>%  
   filter(analysis_outcome_washout == 365) %>% 
   filter(analysis_interval == "quarters") %>%
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -837,7 +812,7 @@ ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_qrs
 
 # INCIDENCE IN MONTHS STRATIFIED BY AGE AND SEX 
 
-inc_months_plot_s <- study_results$incidence_estimates %>%  
+inc_months_plot_s <- inc %>%  
   filter(analysis_interval == "months") %>%
   filter(analysis_outcome_washout == 365) %>% 
   mutate(outcome = case_when(outcome_cohort_name == "BreastCancer" ~ "Breast",
@@ -845,8 +820,8 @@ inc_months_plot_s <- study_results$incidence_estimates %>%
                              outcome_cohort_name == "LungCancer" ~ "Lung",
                              outcome_cohort_name == "ProstateCancer" ~ "Prostate")) %>% 
   filter(!is.na(outcome)) %>%
-  filter(!denominator_age_group %in% c("0;19")) %>%
-  as.data.frame()
+  filter(!denominator_age_group %in% c("0;19"))# %>%
+  #as.data.frame()
 
 inc_months_plot_s <- 
   ggplot(inc_months_plot_s, aes(x = incidence_start_date, y=incidence_100000_pys,
@@ -854,11 +829,11 @@ inc_months_plot_s <-
                               ymax = incidence_100000_pys_95CI_upper, color=outcome, group=outcome)) +
   geom_point() + geom_line() +
   geom_errorbar(width=0) +
-  scale_y_continuous(limits = c(0, NA)) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  facet_grid(~denominator_age_group ~denominator_sex) +
+  #scale_y_continuous(limits = c(0, NA)) +
+  scale_x_date(date_labels="%b %Y",date_breaks  ="3 month")+
+  facet_wrap(~denominator_age_group ~denominator_sex, nrow=5, scales = "free_y") +
     ggtitle("Incidence Rates of Cancer in Months Before and After COVID-19 Lockdown Stratified by Age and Sex") +
-  labs(colour = "Cancer", x="Time" , y="Incidence per 100000 person-years") +
+  labs(colour = "Cancer", x=" " , y="Incidence per 100,000 person-years") +
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
   geom_vline(xintercept=as.numeric(as.Date(c("2020-03-23"))),linetype=2, color="red")
 
@@ -875,7 +850,8 @@ dev.off()
 
 
 # Save the plot as jpg
-ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot_s, dpi=300, scale = 1, width = 12, height = 9)
+ggsave(here("Results", db.name , "1_Cancers", paste0(plotname, ".jpg")), inc_months_plot_s, dpi=900, scale = 1, width = 20, height = 10)
+
 
 
 
