@@ -1,9 +1,9 @@
 # ============================================================================ #
-#                         Incidence/Prevalence for                             #
-#                 Breast, Colorectal, Lung and Prostate Cancer                 #
-#                         Pre-OCIVD, lockdown, and Post-lockdown               #
+#                         Incidence of Breast, Colorectal, Lung                #
+#                    and Prostate Cancer Stratified by Region                  #
+#                         Pre-COVID, lockdown, and Post-lockdown               #
 #                              Nicola Barclay                                  #
-#                                22-03-2023                                    #
+#                                06-07-2023                                    #
 # ============================================================================ #
 
 
@@ -13,9 +13,8 @@ info(logger, "- 1. Incidence and Prevalence of Cancers")
 
 ## ============================= PRE-COVID ================================== ##
 
-## ======= Compute the denominator population pre-COVID  ==================== ##
+## ======= Join the CDM observation period with location information ======== ##
 
-# add selects etc then loop over all the locations
 allRegions <- cdm$location %>% pull(location_source_value)
 cdm$observation_period_original <- cdm$observation_period
 cdm$observation_period <- cdm$observation_period_original %>% 
@@ -31,16 +30,15 @@ cdm$observation_period <- cdm$observation_period_original %>%
                                       region == "Scotland" ~ "Scotland",
                                       region == "Wales" ~ "Wales")) %>%
   compute()
- # select(-"region") %>%
-  
 
 
+# test loop that doesn't work
 for (each_region in seq_along(allRegions)) { 
-  cdm$observation_period_[[paste0(allRegions[each_region])]] <- cdm$observation_period %>% filter(region == each_region) %>% compute()
+  cdm$observation_period <- cdm$observation_period %>% filter(region == each_region) %>% compute()
 
 cdm <-generateDenominatorCohortSet(
   cdm = cdm,
-  name = paste0("denominator_", allRegions[i]),
+  name = paste0("denominator_", allRegions[each_region]),
   cohortDateRange = as.Date(c("2017-01-01","2020-03-22")),
   ageGroup = list(c(0,150)),
   sex = c("Both", "Male", "Female"),
@@ -50,7 +48,7 @@ cdm <-generateDenominatorCohortSet(
 }
 
 
-# test loop
+# test loop also that doesn't work
 for (each_region in seq_along(allRegions)) { 
   cdm$observation_period_[[paste0(allRegions[each_region])]] <- cdm$observation_period %>% filter(region == each_region) %>% compute() }
     

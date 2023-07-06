@@ -8,6 +8,10 @@ if (!file.exists(output.folder1)){
 if (!file.exists(output.folder2)){
   dir.create(output.folder2, recursive = TRUE)}
 
+if (!file.exists(output.folder3)){
+  dir.create(output.folder3, recursive = TRUE)}
+
+
 
 start<-Sys.time()
 
